@@ -1,3 +1,4 @@
+<!-- src/components/ui/MovieCard/MovieCard.vue -->
 <template>
   <div class="movie-card">
     <img :src="getImageUrl(movie.poster_path)" :alt="movie.title" />
@@ -5,14 +6,16 @@
     <div class="movie-info">
       <span class="rating">{{ formatRating(movie.vote_average) }} / 10</span>
       <span class="separator">•</span>
-      <span class="release-date">{{ formatReleaseDate(movie.release_date) }}</span>
+      <span class="release-date">{{
+        formatReleaseDate(movie.release_date)
+      }}</span>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'MovieCard',
+  name: "MovieCard",
   props: {
     movie: {
       type: Object,
@@ -23,15 +26,15 @@ export default {
     getImageUrl(path) {
       return path
         ? `https://image.tmdb.org/t/p/w500${path}`
-        : '/img/notFound.png';
+        : "/img/notFound.png";
     },
     formatRating(rating) {
-      return rating ? `${rating.toFixed(1)}` : 'N/A';
+      return rating ? `${rating.toFixed(1)}` : "N/A";
     },
     formatReleaseDate(date) {
-      if (!date) return 'Fecha no disponible';
-      const options = { year: 'numeric', month: 'short', day: 'numeric' };
-      return new Date(date).toLocaleDateString('es-ES', options);
+      if (!date) return "Fecha no disponible";
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Date(date).toLocaleDateString("es-ES", options);
     },
   },
 };

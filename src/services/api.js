@@ -14,7 +14,6 @@ const api = axios.create({
 export const getPopularMovies = async () => {
   try {
     const response = await api.get("/movie/popular");
-    console.log(response);
     return response.data.results;
   } catch (error) {
     console.error("Error al obtener películas populares:", error);
@@ -27,7 +26,6 @@ export async function getMovieDetails(movieId) {
     const response = await axios.get(
       `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=es-ES`
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     throw error;
