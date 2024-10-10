@@ -173,7 +173,7 @@ export default {
       return `${hours}h ${minutes} min`;
     },
     formatRating(rating) {
-      return rating ? `${rating.toFixed(1)}` : "N/A";
+      return rating ? `${rating.toFixed(1)}` : "NA";
     },
     formatReleaseDate(releaseDate) {
       if (!releaseDate) return "-";

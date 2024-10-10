@@ -24,6 +24,11 @@
   gap: 30px;
 }
 
+.link-logo {
+  color: #fff;
+  text-decoration: none;
+}
+
 .nav-link {
   display: flex;
   align-items: center;
@@ -47,21 +52,21 @@
 .user-icon {
   display: flex;
   align-items: center;
-  justify-content: center; /* Centra el icono horizontal y verticalmente */
+  justify-content: center;
   position: relative;
   cursor: pointer;
   margin-left: auto;
   width: 50px;
   height: 50px;
-  background-color: #1e1e2f; /* Color de fondo del círculo */
-  border-radius: 50%; /* Hace que sea circular */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Efecto de levantamiento */
-  transition: box-shadow 0.3s, background-color 0.3s; /* Efecto de hover */
+  background-color: #1e1e2f;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s, background-color 0.3s;
 }
 
 .user-icon:hover {
-  background-color: #333; /* Cambia el color al pasar el mouse */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Incrementa el levantamiento */
+  background-color: #333;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .user-icon .icon {
@@ -78,8 +83,8 @@
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   margin-top: 10px;
-  padding: 10px; /* Espaciado interno */
-  min-width: 150px; /* Asegura que tenga suficiente ancho */
+  padding: 10px;
+  min-width: 150px;
 }
 
 .dropdown button {
@@ -89,7 +94,8 @@
   padding: 10px;
   cursor: pointer;
   width: 100%;
-  text-align: center; /* Centra el texto */
+  border-radius: 8px;
+  text-align: center;
   font-size: 16px;
 }
 
