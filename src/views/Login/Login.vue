@@ -25,25 +25,45 @@
 </template>
 
 <script>
+import {
+  getRequestToken,
+  validateUser,
+  createSession,
+} from "../../services/api";
+
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
-      username: '',
-      password: '',
-      error: ''
+      username: "",
+      password: "",
+      error: "",
     };
   },
   methods: {
-    handleLogin() {
-      if (this.username && this.password) {
-        localStorage.setItem('auth', 'true');
-        this.$router.push({ name: 'Home' });
-      } else {
-        this.error = 'Por favor, ingresa username y contraseña.';
+    async handleLogin() {
+      try {
+        const requestToken = await getRequestToken();
+
+        const validationResponse = await validateUser(
+          this.username,
+          this.password,
+          requestToken
+        );
+
+        const sessionResponse = await createSession(
+          validationResponse.request_token
+        );
+        localStorage.setItem("session_id", sessionResponse.session_id);
+
+        this.$router.push({ name: "Home" });
+      } catch (error) {
+        this.error =
+          "Error en el inicio de sesión. Por favor verifica tus credenciales.";
+        console.error("Error en el inicio de sesión:", error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

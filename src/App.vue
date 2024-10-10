@@ -4,17 +4,24 @@
 </template>
 
 <script>
-import TopBar from './components/topbar/TopBar.vue';
+import TopBar from "./components/topbar/TopBar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    TopBar
+    TopBar,
   },
   computed: {
     isLoginPage() {
-      return this.$route.name === 'Login';
+      return this.$route.name === "Login";
+    },
+  },
+  created() {
+    const sessionId = localStorage.getItem("session_id");
+
+    if (!sessionId && this.$route.name !== "Login") {
+      this.$router.push({ name: "Login" });
     }
-  }
+  },
 };
 </script>

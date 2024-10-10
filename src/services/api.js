@@ -31,3 +31,39 @@ export async function getMovieDetails(movieId) {
     throw error;
   }
 }
+
+export const getRequestToken = async () => {
+  try {
+    const response = await api.get("/authentication/token/new");
+    return response.data.request_token;
+  } catch (error) {
+    console.error("Error al obtener el token de solicitud:", error);
+    throw error;
+  }
+};
+
+export const validateUser = async (username, password, requestToken) => {
+  try {
+    const response = await api.post("/authentication/token/validate_with_login", {
+      username,
+      password,
+      request_token: requestToken,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al validar el usuario:", error);
+    throw error;
+  }
+};
+
+export const createSession = async (requestToken) => {
+  try {
+    const response = await api.post("/authentication/session/new", {
+      request_token: requestToken,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al crear la sesión:", error);
+    throw error;
+  }
+};
