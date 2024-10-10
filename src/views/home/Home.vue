@@ -9,9 +9,24 @@
         @input="filterMovies"
       />
     </div>
+    
     <MovieCarousel
       :movies="filteredMovies"
       title="Películas Populares"
+      :slides-per-view="slidesPerView"
+      :breakpoints="breakpoints"
+    />
+
+    <MovieCarousel
+      :movies="filteredUpcomingMovies"
+      title="Películas en Cartelera"
+      :slides-per-view="slidesPerView"
+      :breakpoints="breakpoints"
+    />
+    
+    <MovieCarousel
+      :movies="filteredTopRatedMovies"
+      title="Películas Mejor Calificadas"
       :slides-per-view="slidesPerView"
       :breakpoints="breakpoints"
     />
@@ -19,7 +34,7 @@
 </template>
 
 <script>
-import { getPopularMovies, getMovieDetails } from "../../services/api";
+import { getPopularMovies, getTopRatedMovies, getMovieDetails, getUpcomingMovies } from "../../services/api";
 import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
 
 export default {
@@ -31,6 +46,8 @@ export default {
     return {
       movies: [],
       filteredMovies: [],
+      filteredTopRatedMovies: [],
+      filteredUpcomingMovies: [],
       searchQuery: "",
       slidesPerView: 7,
       breakpoints: {
@@ -56,7 +73,35 @@ export default {
         this.movies = moviesWithDetails;
         this.filteredMovies = this.movies;
       } catch (error) {
-        console.error("Error al cargar las películas:", error);
+        console.error("Error al cargar las películas populares:", error);
+      }
+    },
+    async fetchTopRatedMovies() {
+      try {
+        const topRatedMovies = await getTopRatedMovies();
+        const moviesWithDetails = await Promise.all(
+          topRatedMovies.map(async (movie) => {
+            const details = await getMovieDetails(movie.id);
+            return { ...movie, runtime: details.runtime };
+          })
+        );
+        this.filteredTopRatedMovies = moviesWithDetails;
+      } catch (error) {
+        console.error("Error al cargar las películas mejor calificadas:", error);
+      }
+    },
+    async fetchUpcomingMovies() {
+      try {
+        const upcomingMovies = await getUpcomingMovies();
+        const moviesWithDetails = await Promise.all(
+          upcomingMovies.map(async (movie) => {
+            const details = await getMovieDetails(movie.id);
+            return { ...movie, runtime: details.runtime };
+          })
+        );
+        this.filteredUpcomingMovies = moviesWithDetails;
+      } catch (error) {
+        console.error("Error al cargar las películas mejor calificadas:", error);
       }
     },
     filterMovies() {
@@ -68,8 +113,11 @@ export default {
   },
   mounted() {
     this.fetchMovies();
+    this.fetchTopRatedMovies();
+    this.fetchUpcomingMovies();
   },
 };
 </script>
+
 
 <style src="./home.css" scoped></style>

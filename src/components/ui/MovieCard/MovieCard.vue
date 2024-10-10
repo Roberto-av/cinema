@@ -1,14 +1,16 @@
-<!-- src/components/ui/MovieCard/MovieCard.vue -->
 <template>
   <div class="movie-card">
-    <img :src="getImageUrl(movie.poster_path)" :alt="movie.title" />
+    <div class="image-container">
+      <img :src="getImageUrl(movie.poster_path)" :alt="movie.title" />
+      <span class="release-year">{{
+        formatReleaseYear(movie.release_date)
+      }}</span>
+    </div>
     <h3>{{ movie.title }}</h3>
     <div class="movie-info">
       <span class="rating">{{ formatRating(movie.vote_average) }} / 10</span>
       <span class="separator">•</span>
-      <span class="release-date">{{
-        formatReleaseDate(movie.release_date)
-      }}</span>
+      <span class="runtime">{{ formatRuntime(movie.runtime) }}</span>
     </div>
   </div>
 </template>
@@ -35,6 +37,16 @@ export default {
       if (!date) return "Fecha no disponible";
       const options = { year: "numeric", month: "short", day: "numeric" };
       return new Date(date).toLocaleDateString("es-ES", options);
+    },
+    formatRuntime(runtime) {
+      if (!runtime) return "-";
+      const hours = Math.floor(runtime / 60);
+      const minutes = runtime % 60;
+      return `${hours}h ${minutes} min`;
+    },
+    formatReleaseYear(releaseDate) {
+      if (!releaseDate) return "-";
+      return new Date(releaseDate).getFullYear();
     },
   },
 };

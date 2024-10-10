@@ -21,6 +21,26 @@ export const getPopularMovies = async () => {
   }
 };
 
+export const getTopRatedMovies = async () => {
+  try {
+    const response = await api.get("/movie/top_rated");
+    return response.data.results;
+  } catch (error) {
+    console.error("Error al obtener películas mejor calificadas:", error);
+    throw error;
+  }
+};
+
+export const getUpcomingMovies = async () => {
+    try {
+      const response = await api.get("/movie/upcoming");
+      return response.data.results;
+    } catch (error) {
+      console.error("Error al obtener ultimas películas agregadas:", error);
+      throw error;
+    }
+  };
+
 export async function getMovieDetails(movieId) {
   try {
     const response = await axios.get(
@@ -44,11 +64,14 @@ export const getRequestToken = async () => {
 
 export const validateUser = async (username, password, requestToken) => {
   try {
-    const response = await api.post("/authentication/token/validate_with_login", {
-      username,
-      password,
-      request_token: requestToken,
-    });
+    const response = await api.post(
+      "/authentication/token/validate_with_login",
+      {
+        username,
+        password,
+        request_token: requestToken,
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error al validar el usuario:", error);
