@@ -48,9 +48,24 @@ export async function getMovieDetails(movieId) {
     );
     return response.data;
   } catch (error) {
+    console.error("Error en la API:", error);
     throw error;
   }
 }
+
+export const getMovieImages = async (movieId) => {
+    try {
+      const response = await api.get(`/movie/${movieId}/images`, {
+        params: {
+          include_image_language: "en",
+        },
+      });
+      return response.data.backdrops;   
+    } catch (error) {
+      console.error("Error al obtener imágenes de la película:", error);
+      throw error;
+    }
+  };
 
 export const getRequestToken = async () => {
   try {

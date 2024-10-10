@@ -1,46 +1,51 @@
 <template>
   <div class="home-container">
     <h2 class="title">Cinema Club tiene las mejores películas</h2>
-    <div class="search-bar">
-      <input
-        type="text"
-        v-model="searchQuery"
-        placeholder="Buscar Película"
-        @input="filterMovies"
+
+    <div v-if="isLoading">
+      <Loader />
+    </div>
+
+    <div v-else>
+      <MovieCarousel
+        :movies="filteredMovies"
+        title="Películas Populares"
+        :slides-per-view="slidesPerView"
+        :breakpoints="breakpoints"
+      />
+
+      <MovieCarousel
+        :movies="filteredUpcomingMovies"
+        title="Películas en Cartelera"
+        :slides-per-view="slidesPerView"
+        :breakpoints="breakpoints"
+      />
+
+      <MovieCarousel
+        :movies="filteredTopRatedMovies"
+        title="Películas Mejor Calificadas"
+        :slides-per-view="slidesPerView"
+        :breakpoints="breakpoints"
       />
     </div>
-    
-    <MovieCarousel
-      :movies="filteredMovies"
-      title="Películas Populares"
-      :slides-per-view="slidesPerView"
-      :breakpoints="breakpoints"
-    />
-
-    <MovieCarousel
-      :movies="filteredUpcomingMovies"
-      title="Películas en Cartelera"
-      :slides-per-view="slidesPerView"
-      :breakpoints="breakpoints"
-    />
-    
-    <MovieCarousel
-      :movies="filteredTopRatedMovies"
-      title="Películas Mejor Calificadas"
-      :slides-per-view="slidesPerView"
-      :breakpoints="breakpoints"
-    />
   </div>
 </template>
 
 <script>
-import { getPopularMovies, getTopRatedMovies, getMovieDetails, getUpcomingMovies } from "../../services/api";
+import {
+  getPopularMovies,
+  getTopRatedMovies,
+  getMovieDetails,
+  getUpcomingMovies,
+} from "../../services/api";
 import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
+import Loader from "../../components/ui/loader/Loader.vue";
 
 export default {
   name: "Home",
   components: {
     MovieCarousel,
+    Loader,
   },
   data() {
     return {
@@ -58,10 +63,15 @@ export default {
         425: { slidesPerView: 2 },
         0: { slidesPerView: 1 },
       },
+      isLoading: false, 
+      apiCallCount: 0, 
+      totalApiCalls: 3,
     };
   },
   methods: {
     async fetchMovies() {
+      this.isLoading = true;
+      this.apiCallCount++;
       try {
         const popularMovies = await getPopularMovies();
         const moviesWithDetails = await Promise.all(
@@ -74,9 +84,13 @@ export default {
         this.filteredMovies = this.movies;
       } catch (error) {
         console.error("Error al cargar las películas populares:", error);
+      } finally {
+        this.apiCallCount--; 
+        this.checkLoading(); 
       }
     },
     async fetchTopRatedMovies() {
+      this.apiCallCount++;
       try {
         const topRatedMovies = await getTopRatedMovies();
         const moviesWithDetails = await Promise.all(
@@ -87,10 +101,17 @@ export default {
         );
         this.filteredTopRatedMovies = moviesWithDetails;
       } catch (error) {
-        console.error("Error al cargar las películas mejor calificadas:", error);
+        console.error(
+          "Error al cargar las películas mejor calificadas:",
+          error
+        );
+      } finally {
+        this.apiCallCount--;
+        this.checkLoading();
       }
     },
     async fetchUpcomingMovies() {
+      this.apiCallCount++;
       try {
         const upcomingMovies = await getUpcomingMovies();
         const moviesWithDetails = await Promise.all(
@@ -101,7 +122,10 @@ export default {
         );
         this.filteredUpcomingMovies = moviesWithDetails;
       } catch (error) {
-        console.error("Error al cargar las películas mejor calificadas:", error);
+        console.error("Error al cargar las películas en cartelera:", error);
+      } finally {
+        this.apiCallCount--; 
+        this.checkLoading(); 
       }
     },
     filterMovies() {
@@ -109,6 +133,11 @@ export default {
       this.filteredMovies = this.movies.filter((movie) =>
         movie.title.toLowerCase().includes(query)
       );
+    },
+    checkLoading() {
+      if (this.apiCallCount === 0) {
+        this.isLoading = false;
+      }
     },
   },
   mounted() {
@@ -118,6 +147,5 @@ export default {
   },
 };
 </script>
-
 
 <style src="./home.css" scoped></style>

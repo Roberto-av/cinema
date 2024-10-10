@@ -1,0 +1,91 @@
+.movie-details {
+  text-align: left;
+  color: #fff;
+  margin-top: 100px;
+  min-height: 100vh;
+}
+
+.movie-header {
+  display: flex;
+  position: relative;
+  padding: 20px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #0d102d;
+}
+
+.movie-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+.movie-header img {
+  width: 300px;
+  height: auto;
+  border-radius: 8px;
+  margin-right: 20px;
+  z-index: 2;
+}
+
+.movie-info {
+  position: relative;
+  z-index: 2;
+}
+
+.synopsis {
+  width: 60%;
+  margin-top: 130px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.genres {
+  margin-top: 10px;
+}
+
+.genre {
+  background-color: #7444ff;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.rating-runtime {
+  margin-top: 10px;
+  font-size: 14px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  margin-bottom: 20px;
+}
+
+.rating {
+  color: #10ab7b;
+}
+
+.runtime {
+  color: #a4a4a4;
+}
+
+.release-date {
+  color: #a4a4a4;
+}
+
+.separator {
+  margin: 0 5px;
+}
+
+.fade-effect {
+  height: 20px;
+  background: linear-gradient(to top, rgba(13, 16, 45, 1), rgba(13, 16, 45, 0));
+  margin: 0;
+  padding: 0;
+  position: relative;
+}

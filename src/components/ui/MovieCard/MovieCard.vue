@@ -1,18 +1,20 @@
 <template>
-  <div class="movie-card">
-    <div class="image-container">
-      <img :src="getImageUrl(movie.poster_path)" :alt="movie.title" />
-      <span class="release-year">{{
-        formatReleaseYear(movie.release_date)
-      }}</span>
+    <div class="movie-card">
+      <router-link :to="`/movie/${movie.id}`">
+      <div class="image-container">
+        <img :src="getImageUrl(movie.poster_path)" :alt="movie.title" />
+        <span class="release-year">{{
+          formatReleaseYear(movie.release_date)
+        }}</span>
+      </div>
+      <h3>{{ movie.title }}</h3>
+      <div class="movie-info">
+        <span class="rating">{{ formatRating(movie.vote_average) }} / 10</span>
+        <span class="separator">•</span>
+        <span class="runtime">{{ formatRuntime(movie.runtime) }}</span>
+      </div>
+    </router-link>
     </div>
-    <h3>{{ movie.title }}</h3>
-    <div class="movie-info">
-      <span class="rating">{{ formatRating(movie.vote_average) }} / 10</span>
-      <span class="separator">•</span>
-      <span class="runtime">{{ formatRuntime(movie.runtime) }}</span>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -32,11 +34,6 @@ export default {
     },
     formatRating(rating) {
       return rating ? `${rating.toFixed(1)}` : "N/A";
-    },
-    formatReleaseDate(date) {
-      if (!date) return "Fecha no disponible";
-      const options = { year: "numeric", month: "short", day: "numeric" };
-      return new Date(date).toLocaleDateString("es-ES", options);
     },
     formatRuntime(runtime) {
       if (!runtime) return "-";

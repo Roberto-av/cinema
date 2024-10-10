@@ -1,6 +1,6 @@
 <template>
     <div class="movies-section">
-      <h2>{{ title }}</h2>
+    <h2 class="section-title">{{ title }}</h2> <!-- Añadir clase aquí -->
       <div class="carousel-container">
         <button class="nav-button prev" @click="slideLeft"><</button>
         <swiper
@@ -28,7 +28,7 @@
   import { Swiper, SwiperSlide } from "swiper/vue";
   import "swiper/swiper-bundle.css";
   import MovieCard from "../MovieCard/MovieCard.vue";
-  
+
   export default {
     name: "MovieCarousel",
     components: {

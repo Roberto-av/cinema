@@ -69,3 +69,12 @@
 .runtime {
   color: #888;
 }
+
+.movie-card a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.movie-card a:hover {
+  transform: none;
+}
