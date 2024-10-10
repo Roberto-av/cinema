@@ -7,12 +7,14 @@
 
 .movie-header {
   display: flex;
+  flex-direction: column;
   position: relative;
-  padding: 20px;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   background-color: #0d102d;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .movie-header::before {
@@ -27,22 +29,29 @@
 }
 
 .img-poster {
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
   height: auto;
   border-radius: 8px;
-  margin-right: 20px;
+  margin-bottom: 20px;
   z-index: 2;
+}
+
+.title {
+  font-size: 26px;
 }
 
 .movie-info {
   position: relative;
   z-index: 2;
+  width: 100%;
 }
 
 .synopsis {
-  width: 60%;
-  margin-top: 80px;
+  width: 100%;
+  margin-top: 20px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  font-size: 16px;
 }
 
 .genres {
@@ -82,14 +91,6 @@
   margin: 0 5px;
 }
 
-.fade-effect {
-  height: 20px;
-  background: linear-gradient(to top, rgba(13, 16, 45, 1), rgba(13, 16, 45, 0));
-  margin: 0;
-  padding: 0;
-  position: relative;
-}
-
 .buttons {
   margin-top: 16px;
   display: flex;
@@ -99,13 +100,12 @@
 
 .reaction-text {
   font-size: 16px;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .reaction-button {
   background-color: #283387;
-  margin-left: 20px;
   color: white;
   border: none;
   border-radius: 50%;
@@ -126,4 +126,142 @@
   margin-top: 5px;
   width: 20px;
   height: 20px;
+}
+
+@media (min-width: 576px) {
+  .synopsis {
+    font-size: 17px;
+  }
+
+  .reaction-text {
+    font-size: 17px;
+    margin-bottom: 10px;
+  }
+
+  .reaction-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .movie-header {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .img-poster {
+    margin-bottom: 0;
+    margin-right: 20px;
+  }
+
+  .synopsis {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .reaction-text {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .reaction-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  .title {
+    font-size: 26px;
+  }
+
+  .synopsis {
+    font-size: 16px;
+    margin-top: 70px;
+  }
+
+  .reaction-text {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+
+  .reaction-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .title {
+    font-size: 26px;
+  }
+
+  .synopsis {
+    font-size: 20px;
+  }
+
+  .reaction-text {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .reaction-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .movie-header {
+    width: 100%;
+  }
+
+  .synopsis {
+    width: 70%;
+    margin-top: 70px;
+    font-size: 18px;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  .reaction-text {
+    font-size: 18px;
+  }
+
+  .reaction-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .icon {
+    width: 24px;
+    height: 24px;
+  }
 }

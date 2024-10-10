@@ -16,7 +16,7 @@
         class="img-poster"
       />
       <div class="movie-info">
-        <h1 v-if="movie">{{ movie.title }}</h1>
+        <h1 v-if="movie" class="title">{{ movie.title }}</h1>
         <div class="rating-runtime">
           <span class="rating" v-if="movie">
             {{ formatRating(movie.vote_average) }} / 10
