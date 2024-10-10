@@ -32,14 +32,14 @@ export const getTopRatedMovies = async () => {
 };
 
 export const getUpcomingMovies = async () => {
-    try {
-      const response = await api.get("/movie/upcoming");
-      return response.data.results;
-    } catch (error) {
-      console.error("Error al obtener ultimas películas agregadas:", error);
-      throw error;
-    }
-  };
+  try {
+    const response = await api.get("/movie/upcoming");
+    return response.data.results;
+  } catch (error) {
+    console.error("Error al obtener ultimas películas agregadas:", error);
+    throw error;
+  }
+};
 
 export async function getMovieDetails(movieId) {
   try {
@@ -54,18 +54,18 @@ export async function getMovieDetails(movieId) {
 }
 
 export const getMovieImages = async (movieId) => {
-    try {
-      const response = await api.get(`/movie/${movieId}/images`, {
-        params: {
-          include_image_language: "en",
-        },
-      });
-      return response.data.backdrops;   
-    } catch (error) {
-      console.error("Error al obtener imágenes de la película:", error);
-      throw error;
-    }
-  };
+  try {
+    const response = await api.get(`/movie/${movieId}/images`, {
+      params: {
+        include_image_language: "en",
+      },
+    });
+    return response.data.backdrops;
+  } catch (error) {
+    console.error("Error al obtener imágenes de la película:", error);
+    throw error;
+  }
+};
 
 export const getRequestToken = async () => {
   try {
@@ -102,6 +102,55 @@ export const createSession = async (requestToken) => {
     return response.data;
   } catch (error) {
     console.error("Error al crear la sesión:", error);
+    throw error;
+  }
+};
+
+export const postVote = async (movieId, sessionId, { value }) => {
+  try {
+    const response = await api.post(
+      `/movie/${movieId}/rating`,
+      {
+        value,
+      },
+      {
+        params: {
+          session_id: sessionId,
+        },
+      }
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error al votar:", error);
+    throw error;
+  }
+};
+
+export const deleteVote = async (movieId, sessionId) => {
+  try {
+    const response = await api.delete(`/movie/${movieId}/rating`, {
+      params: {
+        session_id: sessionId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al eliminar el voto:", error);
+    throw error;
+  }
+};
+
+export const getAccountStates = async (movieId, sessionId) => {
+  try {
+    const response = await api.get(`/movie/${movieId}/account_states`, {
+      params: {
+        session_id: sessionId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el estado de la cuenta:", error);
     throw error;
   }
 };

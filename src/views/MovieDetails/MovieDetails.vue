@@ -1,7 +1,7 @@
 <template>
   <div class="movie-details">
     <div v-if="isLoading">
-        <Loader/>
+      <Loader />
     </div>
 
     <div
@@ -13,11 +13,12 @@
         v-if="movie"
         :src="getImageUrl(movie.poster_path)"
         :alt="movie.title"
+        class="img-poster"
       />
       <div class="movie-info">
         <h1 v-if="movie">{{ movie.title }}</h1>
         <div class="rating-runtime">
-          <span class="rating" v-if="movie" >
+          <span class="rating" v-if="movie">
             {{ formatRating(movie.vote_average) }} / 10
           </span>
           <span class="separator">|</span>
@@ -26,13 +27,29 @@
           </span>
           <span class="separator">•</span>
           <span class="release-date" v-if="movie">
-            {{ formatReleaseYear(movie.release_date) }}
+            {{ formatReleaseDate(movie.release_date) }}
           </span>
         </div>
         <div class="genres" v-if="movie">
           <span v-for="genre in movie.genres" :key="genre.id" class="genre">
             {{ genre.name }}<span v-if="!$last"></span>
           </span>
+        </div>
+        <div class="buttons">
+          <p class="reaction-text">Reaccionar</p>
+          <button class="reaction-button" @click="handleVote">
+            <span>
+              <img
+                :src="
+                  userHasVoted
+                    ? '/src/assets/icons/HeartRed.svg'
+                    : '/src/assets/icons/Heart.svg'
+                "
+                alt=""
+                class="icon"
+              />
+            </span>
+          </button>
         </div>
         <p v-if="movie" class="synopsis">{{ movie.overview }}</p>
       </div>
@@ -41,7 +58,13 @@
 </template>
 
 <script>
-import { getMovieDetails, getMovieImages } from "../../services/api";
+import {
+  getMovieDetails,
+  getMovieImages,
+  postVote,
+  deleteVote,
+  getAccountStates,
+} from "../../services/api";
 import Loader from "../../components/ui/loader/Loader.vue";
 
 export default {
@@ -52,9 +75,10 @@ export default {
   data() {
     return {
       movie: null,
-      backgroundImage: "", 
+      backgroundImage: "",
       isLoading: true,
-      apiCallCount: 0, 
+      apiCallCount: 0,
+      userHasVoted: false,
     };
   },
   methods: {
@@ -68,27 +92,73 @@ export default {
           return;
         }
         this.movie = details;
-        await this.fetchMovieImages(movieId); 
+        await this.fetchMovieImages(movieId);
+        await this.checkUserVoteStatus();
       } catch (error) {
         console.error("Error al cargar los detalles de la película:", error);
         this.movie = null;
       } finally {
         this.apiCallCount--;
-        this.checkLoading(); 
+        this.checkLoading();
       }
     },
     async fetchMovieImages(movieId) {
-        this.apiCallCount++; 
+      this.apiCallCount++;
       try {
         const backdrops = await getMovieImages(movieId);
         if (backdrops.length > 0) {
-          this.backgroundImage = `https://image.tmdb.org/t/p/original${backdrops[0].file_path}`; 
+          this.backgroundImage = `https://image.tmdb.org/t/p/original${backdrops[0].file_path}`;
         }
       } catch (error) {
         console.error("Error al obtener las imágenes de la película:", error);
       } finally {
         this.apiCallCount--;
         this.checkLoading();
+      }
+    },
+    async handleVote() {
+      console.log("User has voted:", this.userHasVoted);
+
+      const movieId = this.movie.id;
+      const sessionId = localStorage.getItem("session_id");
+
+      if (!this.userHasVoted) {
+        // Votar por la película
+        try {
+          await postVote(movieId, sessionId, { value: 10 });
+          this.userHasVoted = true;
+        } catch (error) {
+          console.error("Error al votar:", error);
+        }
+      } else {
+        try {
+          await deleteVote(movieId, sessionId);
+          this.userHasVoted = false;
+        } catch (error) {
+          console.error("Error al eliminar el voto:", error);
+        }
+      }
+    },
+    async checkUserVoteStatus() {
+      const movieId = this.movie.id;
+      const sessionId = localStorage.getItem("session_id");
+
+      if (sessionId) {
+        try {
+          const accountStates = await this.getAccountStates(movieId, sessionId);
+          this.userHasVoted = accountStates.rated;
+        } catch (error) {
+          console.error("Error al verificar el estado del voto:", error);
+        }
+      }
+    },
+    async getAccountStates(movieId, sessionId) {
+      try {
+        const accountStates = await getAccountStates(movieId, sessionId);
+        return accountStates;
+      } catch (error) {
+        console.error("Error al obtener el estado de la cuenta:", error);
+        return { rated: false };
       }
     },
     checkLoading() {
@@ -105,9 +175,13 @@ export default {
     formatRating(rating) {
       return rating ? `${rating.toFixed(1)}` : "N/A";
     },
-    formatReleaseYear(releaseDate) {
+    formatReleaseDate(releaseDate) {
       if (!releaseDate) return "-";
-      return new Date(releaseDate).getFullYear();
+      return new Date(releaseDate).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
     },
     getImageUrl(path) {
       return path
