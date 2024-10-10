@@ -9,51 +9,29 @@
         @input="filterMovies"
       />
     </div>
-    <div class="movies-section">
-      <h2>Películas Populares</h2>
-      <div class="carousel-container">
-        <button class="nav-button prev" @click="slideLeft"><</button>
-        <swiper
-          ref="swiperRef"
-          :slides-per-view="slidesPerView"
-          :space-between="20"
-          pagination
-          @swiper="onSwiper"
-          :simulate-touch="false"
-          :breakpoints="breakpoints"
-        >
-          <swiper-slide v-for="movie in filteredMovies" :key="movie.id">
-            <MovieCard :movie="movie" class="movie-card" />
-          </swiper-slide>
-        </swiper>
-        <button class="nav-button next" @click="slideRight">></button>
-      </div>
-      <div v-if="filteredMovies.length === 0">
-        <p>Cargando películas...</p>
-      </div>
-    </div>
+    <MovieCarousel
+      :movies="filteredMovies"
+      title="Películas Populares"
+      :slides-per-view="slidesPerView"
+      :breakpoints="breakpoints"
+    />
   </div>
 </template>
 
 <script>
 import { getPopularMovies, getMovieDetails } from "../../services/api";
-import MovieCard from "../../components/ui/MovieCard/MovieCard.vue";
-import { Swiper, SwiperSlide } from "swiper/vue";
-import "swiper/swiper-bundle.css";
+import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
 
 export default {
   name: "Home",
   components: {
-    MovieCard,
-    Swiper,
-    SwiperSlide,
+    MovieCarousel,
   },
   data() {
     return {
       movies: [],
       filteredMovies: [],
       searchQuery: "",
-      swiperInstance: null,
       slidesPerView: 7,
       breakpoints: {
         1500: { slidesPerView: 7 },
@@ -86,23 +64,6 @@ export default {
       this.filteredMovies = this.movies.filter((movie) =>
         movie.title.toLowerCase().includes(query)
       );
-    },
-    slideLeft() {
-      if (this.swiperInstance) {
-        this.swiperInstance.slidePrev();
-      } else {
-        console.error("Swiper no está disponible.");
-      }
-    },
-    slideRight() {
-      if (this.swiperInstance) {
-        this.swiperInstance.slideNext();
-      } else {
-        console.error("Swiper no está disponible.");
-      }
-    },
-    onSwiper(swiper) {
-      this.swiperInstance = swiper;
     },
   },
   mounted() {
