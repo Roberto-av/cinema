@@ -13,16 +13,28 @@
 
 .nav-button {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.1);
-  height: 80%;
+  background-color: rgba(255, 255, 255, 0.2);
+  height: 60%;
+  width: 25px;
   border: none;
-  color: #fff;
-  font-size: 30px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 20px;
   cursor: pointer;
-  padding: 12px;
-  transition: background-color 0.3s, transform 0.3s;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
   z-index: 2;
+  opacity: 0;
+}
+
+.carousel-container:hover .nav-button {
+  opacity: 1;
+}
+
+.nav-button:hover {
+  transform: scale(1.2);
+  color: #fff;
 }
 
 .nav-button.prev {
@@ -33,9 +45,9 @@
   right: 10px;
 }
 
-.nav-button:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
+.nav-button svg {
+  width: 24px;
+  height: 24px;
 }
 
 .movie-card {

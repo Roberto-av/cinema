@@ -12,7 +12,9 @@
     >
       <div class="banner-overlay">
         <div class="banner-content">
-          <h1 class="banner-title">{{ bannerMovie.title }}</h1>
+          <router-link :to="`/movie/${bannerMovie.id}`">
+            <h1 class="banner-title">{{ bannerMovie.title }}</h1>
+          </router-link>
           <div class="banner-details">
             <span class="rating"
               >{{ formatRating(bannerMovie.vote_average) }} / 10</span
@@ -47,6 +49,13 @@
     <!-- Carousels de Películas -->
     <div v-else class="carrusel">
       <MovieCarousel
+        :movies="filteredTrendingMovies"
+        title="Películas En Tendencia"
+        :slides-per-view="slidesPerView"
+        :breakpoints="breakpoints"
+      />
+
+      <MovieCarousel
         :movies="filteredMovies"
         title="Películas Populares"
         :slides-per-view="slidesPerView"
@@ -61,8 +70,8 @@
       />
 
       <MovieCarousel
-        :movies="filteredTopRatedMovies"
-        title="Películas Mejor Calificadas"
+        :movies="filteredPopularShows"
+        title="Series En Tendencia"
         :slides-per-view="slidesPerView"
         :breakpoints="breakpoints"
       />
@@ -73,9 +82,11 @@
 <script>
 import {
   getPopularMovies,
-  getTopRatedMovies,
+  getPopularShows,
   getMovieDetails,
   getUpcomingMovies,
+  getTrendingMovies,
+  getShowDetails,
 } from "../../services/api";
 import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
 import Loader from "../../components/ui/loader/Loader.vue";
@@ -91,7 +102,9 @@ export default {
       movies: [],
       filteredMovies: [],
       filteredTopRatedMovies: [],
+      filteredTrendingMovies: [],
       filteredUpcomingMovies: [],
+      filteredPopularShows: [],
       bannerMovie: null,
       searchQuery: "",
       slidesPerView: 7,
@@ -137,12 +150,12 @@ export default {
         this.checkLoading();
       }
     },
-    async fetchTopRatedMovies() {
+    async fetchTrendingMovies() {
       this.apiCallCount++;
       try {
-        const topRatedMovies = await getTopRatedMovies();
+        const trendingMovies = await getTrendingMovies();
         const moviesWithDetails = await Promise.all(
-          topRatedMovies.map(async (movie) => {
+          trendingMovies.map(async (movie) => {
             const details = await getMovieDetails(movie.id);
             return {
               ...movie,
@@ -151,12 +164,40 @@ export default {
             };
           })
         );
-        this.filteredTopRatedMovies = moviesWithDetails;
+        this.filteredTrendingMovies = moviesWithDetails;
       } catch (error) {
         console.error(
           "Error al cargar las películas mejor calificadas:",
           error
         );
+      } finally {
+        this.apiCallCount--;
+        this.checkLoading();
+      }
+    },
+    async fetchShows() {
+      this.isLoading = true;
+      this.apiCallCount++;
+      try {
+        const popularShows = await getPopularShows();
+        const showsWithDetails = await Promise.all(
+          popularShows.map(async (show) => {
+            const details = await getShowDetails(show.id);
+            return {
+              ...show,
+              number_of_seasons: details.number_of_seasons,
+              first_air_date: show.first_air_date,
+            };
+          })
+        );
+        this.shows = showsWithDetails;
+        this.filteredPopularShows = this.shows;
+
+        if (this.shows.length > 0) {
+          this.bannerShow = this.shows[0];
+        }
+      } catch (error) {
+        console.error("Error al cargar las series populares:", error);
       } finally {
         this.apiCallCount--;
         this.checkLoading();
@@ -220,7 +261,8 @@ export default {
   },
   mounted() {
     this.fetchMovies();
-    this.fetchTopRatedMovies();
+    this.fetchTrendingMovies();
+    this.fetchShows();
     this.fetchUpcomingMovies();
   },
 };

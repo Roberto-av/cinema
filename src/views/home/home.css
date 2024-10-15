@@ -124,10 +124,24 @@
   max-width: 90%;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  transform: none;
+}
+
 @media (max-width: 575.98px) {
+  .banner-details {
+    font-size: 12px;
+  }
+
   .banner-title {
     margin-top: 80px;
   }
+
   .banner-synopsis {
     font-size: 13px;
     max-width: 100%;

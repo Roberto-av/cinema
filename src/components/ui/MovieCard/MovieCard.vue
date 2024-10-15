@@ -1,20 +1,32 @@
 <template>
-    <div class="movie-card">
-      <router-link :to="`/movie/${movie.id}`">
+  <div class="movie-card">
+    <router-link :to="`/movie/${movie.id}`">
       <div class="image-container">
         <img :src="getImageUrl(movie.poster_path)" :alt="movie.title" />
         <span class="release-year">{{
-          formatReleaseYear(movie.release_date)
+          movie.release_date
+            ? formatReleaseYear(movie.release_date)
+            : movie.first_air_date
+            ? formatReleaseYear(movie.first_air_date)
+            : "-"
         }}</span>
       </div>
       <h3>{{ movie.title }}</h3>
       <div class="movie-info">
         <span class="rating">{{ formatRating(movie.vote_average) }} / 10</span>
         <span class="separator">•</span>
-        <span class="runtime">{{ formatRuntime(movie.runtime) }}</span>
+        <span class="seasons">
+          {{
+            movie.number_of_seasons
+              ? `${movie.number_of_seasons} temporada${
+                  movie.number_of_seasons > 1 ? "s" : ""
+                }`
+              : formatRuntime(movie.runtime)
+          }}
+        </span>
       </div>
     </router-link>
-    </div>
+  </div>
 </template>
 
 <script>

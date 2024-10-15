@@ -21,9 +21,9 @@ export const getPopularMovies = async () => {
   }
 };
 
-export const getTopRatedMovies = async () => {
+export const getPopularShows = async () => {
   try {
-    const response = await api.get("/movie/top_rated");
+    const response = await api.get("/tv/popular");
     return response.data.results;
   } catch (error) {
     console.error("Error al obtener películas mejor calificadas:", error);
@@ -41,6 +41,16 @@ export const getUpcomingMovies = async () => {
   }
 };
 
+export const getTrendingMovies = async () => {
+  try {
+    const response = await api.get("/trending/movie/day");
+    return response.data.results;
+  } catch (error) {
+    console.error("Error al obtener películas mejor calificadas:", error);
+    throw error;
+  }
+};
+
 export async function getMovieDetails(movieId) {
   try {
     const response = await axios.get(
@@ -52,6 +62,16 @@ export async function getMovieDetails(movieId) {
     throw error;
   }
 }
+
+export const getShowDetails = async (tvId) => {
+  try {
+    const response = await api.get(`/tv/${tvId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener los detalles de la serie:", error);
+    throw error;
+  }
+};
 
 export const getMovieImages = async (movieId) => {
   try {
