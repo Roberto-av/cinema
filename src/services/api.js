@@ -7,7 +7,7 @@ const api = axios.create({
   baseURL: BASE_URL,
   params: {
     api_key: API_KEY,
-    language: "es-ES",
+    language: "es-MX",
   },
 });
 
@@ -26,7 +26,7 @@ export const getPopularShows = async () => {
     const response = await api.get("/tv/popular");
     return response.data.results;
   } catch (error) {
-    console.error("Error al obtener películas mejor calificadas:", error);
+    console.error("Error al obtener Series mejor calificadas:", error);
     throw error;
   }
 };

@@ -51,7 +51,7 @@
             </span>
           </button>
         </div>
-        <p v-if="movie" class="synopsis">{{ movie.overview }}</p>
+        <p v-if="movie" class="synopsis">{{ movie.overview ? movie.overview : 'Sin Sinopsis' }}</p>
       </div>
     </div>
   </div>
@@ -108,6 +108,8 @@ export default {
         const backdrops = await getMovieImages(movieId);
         if (backdrops.length > 0) {
           this.backgroundImage = `https://image.tmdb.org/t/p/original${backdrops[0].file_path}`;
+        } else {
+          this.backgroundImage = "";
         }
       } catch (error) {
         console.error("Error al obtener las imágenes de la película:", error);

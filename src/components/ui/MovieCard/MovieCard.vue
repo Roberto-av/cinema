@@ -11,7 +11,7 @@
             : "-"
         }}</span>
       </div>
-      <h3>{{ movie.title }}</h3>
+      <h3>{{ movie.title ? movie.title : movie.original_name }}</h3>
       <div class="movie-info">
         <span class="rating">{{ formatRating(movie.vote_average) }} / 10</span>
         <span class="separator">•</span>
