@@ -119,7 +119,6 @@ export const postVote = async (movieId, sessionId, { value }) => {
         },
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error al votar:", error);

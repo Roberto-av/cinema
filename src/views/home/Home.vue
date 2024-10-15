@@ -1,12 +1,51 @@
 <template>
   <div class="home-container">
-    <h2 class="title">Cinema Club tiene las mejores películas</h2>
+    <!-- Sección del Banner -->
+    <div
+      v-if="bannerMovie"
+      class="banner"
+      :style="{
+        backgroundImage: `url(${getBackgroundImage(
+          bannerMovie.backdrop_path
+        )})`,
+      }"
+    >
+      <div class="banner-overlay">
+        <div class="banner-content">
+          <h1 class="banner-title">{{ bannerMovie.title }}</h1>
+          <div class="banner-details">
+            <span class="rating"
+              >{{ formatRating(bannerMovie.vote_average) }} / 10</span
+            >
+            <span class="separator">|</span>
+            <span class="runtime">{{
+              formatRuntime(bannerMovie.runtime)
+            }}</span>
+            <span class="separator">•</span>
+            <span class="release-date">{{
+              formatReleaseDate(bannerMovie.release_date)
+            }}</span>
+          </div>
+          <div class="banner-genres">
+            <span
+              v-for="genre in bannerMovie.genres"
+              :key="genre.id"
+              class="genre"
+              >{{ genre.name }}</span
+            >
+          </div>
+          <p class="banner-synopsis">{{ bannerMovie.overview }}</p>
+        </div>
+      </div>
+    </div>
 
+    <!-- Loader -->
     <div v-if="isLoading">
       <Loader />
     </div>
 
-    <div v-else>
+    <!-- Carousels de Películas -->
+    <div v-else class="carrusel">
       <MovieCarousel
         :movies="filteredMovies"
         title="Películas Populares"
@@ -53,6 +92,7 @@ export default {
       filteredMovies: [],
       filteredTopRatedMovies: [],
       filteredUpcomingMovies: [],
+      bannerMovie: null,
       searchQuery: "",
       slidesPerView: 7,
       breakpoints: {
@@ -63,9 +103,9 @@ export default {
         425: { slidesPerView: 2 },
         0: { slidesPerView: 1 },
       },
-      isLoading: false, 
-      apiCallCount: 0, 
-      totalApiCalls: 3,
+      isLoading: false,
+      apiCallCount: 0,
+      totalApiCalls: 4,
     };
   },
   methods: {
@@ -77,16 +117,24 @@ export default {
         const moviesWithDetails = await Promise.all(
           popularMovies.map(async (movie) => {
             const details = await getMovieDetails(movie.id);
-            return { ...movie, runtime: details.runtime };
+            return {
+              ...movie,
+              runtime: details.runtime,
+              genres: details.genres,
+            };
           })
         );
         this.movies = moviesWithDetails;
         this.filteredMovies = this.movies;
+
+        if (this.movies.length > 0) {
+          this.bannerMovie = this.movies[0];
+        }
       } catch (error) {
         console.error("Error al cargar las películas populares:", error);
       } finally {
-        this.apiCallCount--; 
-        this.checkLoading(); 
+        this.apiCallCount--;
+        this.checkLoading();
       }
     },
     async fetchTopRatedMovies() {
@@ -96,7 +144,11 @@ export default {
         const moviesWithDetails = await Promise.all(
           topRatedMovies.map(async (movie) => {
             const details = await getMovieDetails(movie.id);
-            return { ...movie, runtime: details.runtime };
+            return {
+              ...movie,
+              runtime: details.runtime,
+              genres: details.genres,
+            };
           })
         );
         this.filteredTopRatedMovies = moviesWithDetails;
@@ -117,15 +169,19 @@ export default {
         const moviesWithDetails = await Promise.all(
           upcomingMovies.map(async (movie) => {
             const details = await getMovieDetails(movie.id);
-            return { ...movie, runtime: details.runtime };
+            return {
+              ...movie,
+              runtime: details.runtime,
+              genres: details.genres,
+            };
           })
         );
         this.filteredUpcomingMovies = moviesWithDetails;
       } catch (error) {
         console.error("Error al cargar las películas en cartelera:", error);
       } finally {
-        this.apiCallCount--; 
-        this.checkLoading(); 
+        this.apiCallCount--;
+        this.checkLoading();
       }
     },
     filterMovies() {
@@ -138,6 +194,28 @@ export default {
       if (this.apiCallCount === 0) {
         this.isLoading = false;
       }
+    },
+    formatRuntime(runtime) {
+      if (!runtime) return "-";
+      const hours = Math.floor(runtime / 60);
+      const minutes = runtime % 60;
+      return `${hours}h ${minutes} min`;
+    },
+    formatRating(rating) {
+      return rating ? `${rating.toFixed(1)}` : "NA";
+    },
+    formatReleaseDate(releaseDate) {
+      if (!releaseDate) return "-";
+      return new Date(releaseDate).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    },
+    getBackgroundImage(path) {
+      return path
+        ? `https://image.tmdb.org/t/p/original${path}`
+        : "/img/notFound.png";
     },
   },
   mounted() {
