@@ -100,7 +100,7 @@ export const getMovieCredits = async (movieId) => {
 export const getMovieVideos = async (movieId) => {
   try {
     const response = await api.get(`/movie/${movieId}/videos`);
-    return response.data.results.filter(video => video.type === "Trailer");
+    return response.data.results;
   } catch (error) {
     console.error("Error al obtener los trailers de la película:", error);
     throw error;
@@ -120,7 +120,6 @@ export const getMovieRecommendations = async (movieId) => {
 export const getMovieKeyWords = async (movieId) => {
   try {
     const response = await api.get(`/movie/${movieId}/keywords`);
-    console.log(response.data.keywords);
     return response.data;
   } catch (error) {
     console.error("Error al obtener palabras claves de pelicula:", error);

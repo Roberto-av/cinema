@@ -202,6 +202,12 @@
   word-break: break-word;
 }
 
+.trailer-section{
+  padding: 20px;
+  margin-top: -80px;
+  width: 100%;
+}
+
 @media (min-width: 576px) {
   .synopsis {
     font-size: 17px;

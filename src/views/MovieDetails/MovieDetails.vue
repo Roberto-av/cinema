@@ -31,8 +31,13 @@
           </span>
         </div>
         <div class="genres" v-if="movie">
-          <span v-for="genre in movie.genres" :key="genre.id" class="genre">
-            {{ genre.name }}<span v-if="!$last"></span>
+          <span
+            v-for="(genre, index) in movie.genres"
+            :key="genre.id"
+            class="genre"
+          >
+            {{ genre.name
+            }}<span v-if="index !== movie.genres.length - 1"></span>
           </span>
         </div>
         <div class="buttons">
@@ -60,12 +65,10 @@
       <div class="section-row">
         <div class="primary-container">
           <div class="cast-section">
-            <CastCarousel
-              :cast="cast"
-              title="Reparto"
-              :slides-per-view="slidesPerView"
-              :breakpoints="breakpoints"
-            />
+            <CastCarousel :cast="cast" title="Reparto" />
+          </div>
+          <div class="trailer-section">
+            <TrailerComponent :trailer="trailers" />
           </div>
         </div>
         <div class="info-extra">
@@ -92,8 +95,13 @@
           </p>
           <div class="keywords" v-if="movie">
             <p><strong>Palabras Clave</strong></p>
-            <span v-for="keyword in keyWords" :key="keyword.id" class="keyword">
-              {{ keyword.name }}<span v-if="!$last"></span>
+            <span
+              v-for="(keyword, index) in keyWords"
+              :key="keyword.id"
+              class="keyword"
+            >
+              {{ keyword.name
+              }}<span v-if="index !== keyWords.length - 1"></span>
             </span>
           </div>
         </div>
@@ -111,15 +119,18 @@ import {
   getAccountStates,
   getMovieCredits,
   getMovieKeyWords,
+  getMovieVideos,
 } from "../../services/api";
 import Loader from "../../components/ui/loader/Loader.vue";
 import CastCarousel from "../../components/ui/carrusel/CastCarousel.vue";
+import TrailerComponent from "../../components/ui/Trailer/TrailerComponent.vue";
 
 export default {
   name: "MovieDetails",
   components: {
     Loader,
     CastCarousel,
+    TrailerComponent,
   },
   data() {
     return {
@@ -130,6 +141,7 @@ export default {
       userHasVoted: false,
       cast: [],
       keyWords: [],
+      trailers: [],
     };
   },
   methods: {
@@ -146,6 +158,7 @@ export default {
         await this.fetchMovieImages(movieId);
         await this.fetchMovieCredits(movieId);
         await this.fetchMoviekeyWords(movieId);
+        await this.fetchMovieVideos(movieId);
         await this.checkUserVoteStatus();
       } catch (error) {
         console.error("Error al cargar los detalles de la película:", error);
@@ -192,6 +205,19 @@ export default {
       } catch (error) {
         console.error("Error al cargar las palabras claves:", error);
         this.keyWords = [];
+      } finally {
+        this.apiCallCount--;
+        this.checkLoading();
+      }
+    },
+    async fetchMovieVideos(movieId) {
+      this.apiCallCount++;
+      try {
+        const videos = await getMovieVideos(movieId);
+        const trailer = videos.find((video) => video.site === "YouTube"); // Filtras solo los videos de YouTube
+        this.trailers = trailer ? trailer : null; // Asignas el tráiler si existe
+      } catch (error) {
+        console.error("Error al obtener los trailers:", error);
       } finally {
         this.apiCallCount--;
         this.checkLoading();
