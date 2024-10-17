@@ -70,6 +70,14 @@
           <div class="trailer-section">
             <TrailerComponent :trailer="trailers" />
           </div>
+          <div class="recommendations-section">
+            <MovieCarousel
+              :movies="movieRecommendations"
+              title="Recomendación"
+              :slidesPerView="slidesPerView"
+              :breakpoints="breakpoints"
+            />
+          </div>
         </div>
         <div class="info-extra">
           <h2>Info</h2>
@@ -120,10 +128,12 @@ import {
   getMovieCredits,
   getMovieKeyWords,
   getMovieVideos,
+  getMovieRecommendations,
 } from "../../services/api";
 import Loader from "../../components/ui/loader/Loader.vue";
 import CastCarousel from "../../components/ui/carrusel/CastCarousel.vue";
 import TrailerComponent from "../../components/ui/Trailer/TrailerComponent.vue";
+import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
 
 export default {
   name: "MovieDetails",
@@ -131,6 +141,7 @@ export default {
     Loader,
     CastCarousel,
     TrailerComponent,
+    MovieCarousel,
   },
   data() {
     return {
@@ -142,6 +153,16 @@ export default {
       cast: [],
       keyWords: [],
       trailers: [],
+      movieRecommendations: [],
+      slidesPerView: 7,
+      breakpoints: {
+        1500: { slidesPerView: 6 },
+        1400: { slidesPerView: 6 },
+        992: { slidesPerView: 4 },
+        768: { slidesPerView: 3 },
+        425: { slidesPerView: 2 },
+        0: { slidesPerView: 1 },
+      },
     };
   },
   methods: {
@@ -214,10 +235,40 @@ export default {
       this.apiCallCount++;
       try {
         const videos = await getMovieVideos(movieId);
-        const trailer = videos.find((video) => video.site === "YouTube"); // Filtras solo los videos de YouTube
-        this.trailers = trailer ? trailer : null; // Asignas el tráiler si existe
+        const trailer = videos.find((video) => {
+          const title = video.name
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+          return title.startsWith("trailer");
+        });
+        this.trailers = trailer ? trailer : null;
       } catch (error) {
         console.error("Error al obtener los trailers:", error);
+      } finally {
+        this.apiCallCount--;
+        this.checkLoading();
+      }
+    },
+    async fetchRecommendedMovies() {
+      const movieId = this.$route.params.id;
+      this.apiCallCount++;
+      try {
+        const recommendations = await getMovieRecommendations(movieId);
+        const moviesWithDetails = await Promise.all(
+          recommendations.results.map(async (movie) => {
+            const details = await getMovieDetails(movie.id);
+            return {
+              ...movie,
+              runtime: details.runtime,
+              genres: details.genres,
+            };
+          })
+        );
+        this.movieRecommendations = moviesWithDetails;
+      } catch (error) {
+        console.error("Error al cargar las películas recomendadas:", error);
+        this.movieRecommendations = [];
       } finally {
         this.apiCallCount--;
         this.checkLoading();
@@ -316,8 +367,16 @@ export default {
       return `$${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}.00`;
     },
   },
+  watch: {
+    "$route.params.id": function () {
+      this.fetchMovieDetails();
+      this.fetchRecommendedMovies();
+      window.scrollTo(0, 0);
+    },
+  },
   mounted() {
     this.fetchMovieDetails();
+    this.fetchRecommendedMovies();
     window.scrollTo(0, 0);
   },
 };

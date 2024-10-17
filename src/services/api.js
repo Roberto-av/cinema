@@ -110,7 +110,7 @@ export const getMovieVideos = async (movieId) => {
 export const getMovieRecommendations = async (movieId) => {
   try {
     const response = await api.get(`/movie/${movieId}/recommendations`);
-    return response.data.results;
+    return response.data;
   } catch (error) {
     console.error("Error al obtener recomendaciones de la película:", error);
     throw error;

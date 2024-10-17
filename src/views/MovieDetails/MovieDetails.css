@@ -208,6 +208,11 @@
   width: 100%;
 }
 
+.recommendations-section{
+  padding: 20px;
+  width: 100%;
+}
+
 @media (min-width: 576px) {
   .synopsis {
     font-size: 17px;
