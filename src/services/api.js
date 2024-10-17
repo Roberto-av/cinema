@@ -87,6 +87,47 @@ export const getMovieImages = async (movieId) => {
   }
 };
 
+export const getMovieCredits = async (movieId) => {
+  try {
+    const response = await api.get(`/movie/${movieId}/credits`);
+    return response.data.cast;
+  } catch (error) {
+    console.error("Error al obtener el reparto de la película:", error);
+    throw error;
+  }
+};
+
+export const getMovieVideos = async (movieId) => {
+  try {
+    const response = await api.get(`/movie/${movieId}/videos`);
+    return response.data.results.filter(video => video.type === "Trailer");
+  } catch (error) {
+    console.error("Error al obtener los trailers de la película:", error);
+    throw error;
+  }
+};
+
+export const getMovieRecommendations = async (movieId) => {
+  try {
+    const response = await api.get(`/movie/${movieId}/recommendations`);
+    return response.data.results;
+  } catch (error) {
+    console.error("Error al obtener recomendaciones de la película:", error);
+    throw error;
+  }
+};
+
+export const getMovieKeyWords = async (movieId) => {
+  try {
+    const response = await api.get(`/movie/${movieId}/keywords`);
+    console.log(response.data.keywords);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener palabras claves de pelicula:", error);
+    throw error;
+  }
+};
+
 export const getRequestToken = async () => {
   try {
     const response = await api.get("/authentication/token/new");

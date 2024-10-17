@@ -4,11 +4,12 @@
   margin-top: 100px;
   min-height: 100vh;
   min-width: 100%;
+  overflow: hidden;
 }
 
 .movie-header {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: relative;
   background-size: cover;
   background-repeat: no-repeat;
@@ -131,6 +132,76 @@
   height: 20px;
 }
 
+.additional-sections {
+  width: 100%;
+}
+
+.section-row {
+  display: flex; 
+  justify-content: space-between; 
+}
+
+.primary-container {
+  width: 75%;
+}
+
+.cast-section {
+  width: 100%;
+  padding: 20px;
+}
+
+.info-extra {
+  background-color: #131740;
+  border-radius: 8px;
+  width: 20%;
+  padding: 20px;
+  margin-right: 10px;
+  margin-top: 60px;
+}
+
+.info-extra p {
+  margin-bottom: 15px;
+}
+
+.info-extra strong {
+  display: block;
+  font-size: 18px;
+  color: #fff;
+}
+
+.info-extra-s {
+  display: block;
+  margin-top: 5px;
+  font-size: 16px;
+  color: #aaa;
+}
+
+.keywords {
+  display: flex;
+  flex-direction: wrap;
+  flex-wrap: wrap;
+}
+
+.keywords p {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.keyword {
+  font-size: 14px;
+  background-color: #31344C;
+  border-radius: 16px;
+  padding: 4px 10px;
+  margin: 3px;
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box; 
+  white-space: nowrap;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
 @media (min-width: 576px) {
   .synopsis {
     font-size: 17px;
@@ -153,6 +224,14 @@
 }
 
 @media (min-width: 768px) {
+  .primary-container {
+    width: 68%;
+  }
+
+  .cast-section {
+    padding: 10px;
+  }
+
   .title {
     font-size: 24px;
   }
@@ -189,6 +268,14 @@
 }
 
 @media (min-width: 992px) {
+  .primary-container {
+    width: 72%;
+  }
+
+  .cast-section {
+    padding: 10px;
+  }
+
   .title {
     font-size: 26px;
   }
@@ -215,6 +302,14 @@
 }
 
 @media (min-width: 1200px) {
+  .primary-container {
+    width: 73%;
+  }
+
+  .cast-section {
+    padding: 10px;
+  }
+
   .title {
     font-size: 26px;
   }
@@ -240,6 +335,14 @@
 }
 
 @media (min-width: 1400px) {
+  .primary-container {
+    width: 74%;
+  }
+
+  .cast-section {
+    padding: 10px;
+  }
+
   .movie-header {
     width: 100%;
   }

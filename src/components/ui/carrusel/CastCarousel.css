@@ -62,6 +62,14 @@
   transform: scale(1.05);
 }
 
+@media (min-width: 1441px) {
+  .cast-card {
+    min-width:170px;
+    min-height: 310px;
+    margin-right: 20px;
+  }
+}
+
 @media (max-width: 1440px) {
   .cast-card {
     width: 180px;

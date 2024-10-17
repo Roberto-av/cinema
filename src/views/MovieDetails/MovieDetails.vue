@@ -51,7 +51,52 @@
             </span>
           </button>
         </div>
-        <p v-if="movie" class="synopsis">{{ movie.overview ? movie.overview : 'Sin Sinopsis' }}</p>
+        <p v-if="movie" class="synopsis">
+          {{ movie.overview ? movie.overview : "Sin Sinopsis" }}
+        </p>
+      </div>
+    </div>
+    <div class="additional-sections">
+      <div class="section-row">
+        <div class="primary-container">
+          <div class="cast-section">
+            <CastCarousel
+              :cast="cast"
+              title="Reparto"
+              :slides-per-view="slidesPerView"
+              :breakpoints="breakpoints"
+            />
+          </div>
+        </div>
+        <div class="info-extra">
+          <h2>Info</h2>
+          <p v-if="movie">
+            <strong>ESTADO</strong>
+            <span class="info-extra-s">{{ formatStatus(movie.status) }}</span>
+          </p>
+          <p v-if="movie">
+            <strong>IDIOMA ORIGINAL</strong>
+            <span class="info-extra-s">{{
+              formatLanguage(movie.original_language)
+            }}</span>
+          </p>
+          <p v-if="movie">
+            <strong>PRESUPUESTO</strong>
+            <span class="info-extra-s">{{ formatCurrency(movie.budget) }}</span>
+          </p>
+          <p v-if="movie">
+            <strong>INGRESOS</strong>
+            <span class="info-extra-s">{{
+              formatCurrency(movie.revenue)
+            }}</span>
+          </p>
+          <div class="keywords" v-if="movie">
+            <p><strong>Palabras Clave</strong></p>
+            <span v-for="keyword in keyWords" :key="keyword.id" class="keyword">
+              {{ keyword.name }}<span v-if="!$last"></span>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -64,13 +109,17 @@ import {
   postVote,
   deleteVote,
   getAccountStates,
+  getMovieCredits,
+  getMovieKeyWords,
 } from "../../services/api";
 import Loader from "../../components/ui/loader/Loader.vue";
+import CastCarousel from "../../components/ui/carrusel/CastCarousel.vue";
 
 export default {
   name: "MovieDetails",
   components: {
     Loader,
+    CastCarousel,
   },
   data() {
     return {
@@ -79,6 +128,8 @@ export default {
       isLoading: true,
       apiCallCount: 0,
       userHasVoted: false,
+      cast: [],
+      keyWords: [],
     };
   },
   methods: {
@@ -93,6 +144,8 @@ export default {
         }
         this.movie = details;
         await this.fetchMovieImages(movieId);
+        await this.fetchMovieCredits(movieId);
+        await this.fetchMoviekeyWords(movieId);
         await this.checkUserVoteStatus();
       } catch (error) {
         console.error("Error al cargar los detalles de la película:", error);
@@ -113,6 +166,32 @@ export default {
         }
       } catch (error) {
         console.error("Error al obtener las imágenes de la película:", error);
+      } finally {
+        this.apiCallCount--;
+        this.checkLoading();
+      }
+    },
+    async fetchMovieCredits(movieId) {
+      this.apiCallCount++;
+      try {
+        const cast = await getMovieCredits(movieId);
+        this.cast = cast;
+      } catch (error) {
+        console.error("Error al cargar el reparto de la película:", error);
+        this.cast = [];
+      } finally {
+        this.apiCallCount--;
+        this.checkLoading();
+      }
+    },
+    async fetchMoviekeyWords(movieId) {
+      this.apiCallCount++;
+      try {
+        const response = await getMovieKeyWords(movieId);
+        this.keyWords = response.keywords;
+      } catch (error) {
+        console.error("Error al cargar las palabras claves:", error);
+        this.keyWords = [];
       } finally {
         this.apiCallCount--;
         this.checkLoading();
@@ -189,6 +268,26 @@ export default {
       return path
         ? `https://image.tmdb.org/t/p/w500${path}`
         : "/img/notFound.png";
+    },
+    formatStatus(status) {
+      const statusMapping = {
+        Released: "Estrenada",
+        Upcoming: "Próximamente",
+        Rumored: "Rumoreada",
+        Canceled: "Cancelada",
+      };
+      return statusMapping[status] || status;
+    },
+    formatLanguage(language) {
+      const languageMapping = {
+        en: "Inglés",
+        es: "Español",
+      };
+      return languageMapping[language] || language.toUpperCase();
+    },
+    formatCurrency(amount) {
+      if (amount === 0) return "$0.00";
+      return `$${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}.00`;
     },
   },
   mounted() {
