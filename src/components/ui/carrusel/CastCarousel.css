@@ -1,0 +1,108 @@
+.cast-carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.cast-section-title {
+  font-size: 24px;
+  margin: 0;
+  color: #fff;
+}
+
+.cast-nav-button {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.2);
+  height: 60%;
+  width: 25px;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  z-index: 2;
+  opacity: 0;
+}
+
+.cast-carousel-container:hover .cast-nav-button {
+  opacity: 1;
+}
+
+.cast-nav-button:hover {
+  transform: scale(1.2);
+  color: #fff;
+}
+
+.cast-nav-button.prev {
+  left: 10px;
+}
+
+.cast-nav-button.next {
+  right: 10px;
+}
+
+.cast-nav-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.cast-card {
+  flex: 0 0 auto;
+  width: 170px;
+  margin: 10px;
+  transition: transform 0.3s ease;
+  margin-bottom: 40px;
+}
+
+.cast-card:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 1440px) {
+  .cast-card {
+    width: 180px;
+    min-height: 325px;
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .cast-card {
+    width: 150px;
+    min-height: 290px;
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 992px) {
+  .cast-card {
+    width: 145px;
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cast-card {
+    width: 140px;
+    min-height: 270px;
+    margin-right: 10px;
+  }
+}
+
+@media (max-width: 425px) {
+  .cast-card {
+    width: 160px;
+    margin-right: 15px;
+  }
+}
+
+@media (max-width: 375px) {
+  .cast-card {
+    width: 120px;
+    margin-right: 20px;
+  }
+}
