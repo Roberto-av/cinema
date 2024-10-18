@@ -80,6 +80,10 @@
   margin-bottom: 10px;
 }
 
+.banner-title:hover {
+  color: #7444ff;
+}
+
 .banner-details {
   display: flex;
   align-items: center;

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/home/Home.vue";
 import Login from "../views/Login/Login.vue";
 import MovieDetails from "../views/MovieDetails/MovieDetails.vue";
+import ActorDetails from "../views/person/ActorDetails.vue";
 
 const routes = [
   {
@@ -18,6 +19,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/person/:id",
+    name: "ActorDetails",
+    component: ActorDetails,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/login",
     name: "Login",
     component: Login,
@@ -29,7 +36,6 @@ const router = createRouter({
   routes,
 });
 
-// Middleware para proteger rutas que requieren autenticación
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem("session_id");
   if (
@@ -42,4 +48,4 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-export default router; // Exporta la instancia creada con createRouter
+export default router;

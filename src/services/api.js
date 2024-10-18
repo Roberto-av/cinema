@@ -127,6 +127,47 @@ export const getMovieKeyWords = async (movieId) => {
   }
 };
 
+export const getActorDetails = async (actorId) => {
+  try {
+    const response = await api.get(`/person/${actorId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener info del actor:", error);
+    throw error;
+  }
+};
+
+export const getActorMovies  = async (actorId) => {
+  try {
+    const response = await api.get(`/person/${actorId}/movie_credits`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener peliculas de actor:", error);
+    throw error;
+  }
+};
+
+export const getActorMoviesCombined  = async (actorId) => {
+  try {
+    const response = await api.get(`/person/${actorId}/combined_credits`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener peliculas de actor:", error);
+    throw error;
+  }
+};
+
+export const getActorExternalIds  = async (actorId) => {
+  try {
+    const response = await api.get(`/person/${actorId}/external_ids`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener peliculas de actor:", error);
+    throw error;
+  }
+};
+
 export const getRequestToken = async () => {
   try {
     const response = await api.get("/authentication/token/new");
