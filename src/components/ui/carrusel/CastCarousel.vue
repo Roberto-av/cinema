@@ -5,7 +5,7 @@
       <button class="cast-nav-button prev" @click="slideLeft"><</button>
       <swiper
         ref="swiperRef"
-        :slides-per-view="slidesPerView"
+        :slides-per-view="adjustedSlidesPerView"
         :space-between="20"
         pagination
         @swiper="onSwiper"
@@ -15,11 +15,20 @@
         <swiper-slide v-for="actor in cast" :key="actor.id">
           <CastCard :actor="actor" class="cast-card" />
         </swiper-slide>
+        <swiper-slide
+          v-if="cast.length < slidesPerView"
+          v-for="n in slidesPerView - cast.length"
+          :key="`empty-${n}`"
+        >
+          <div class="empty-card"></div>
+        </swiper-slide>
       </swiper>
       <button class="cast-nav-button next" @click="slideRight">></button>
     </div>
     <div v-if="cast.length === 0">
-      <p>Cargando reparto...</p>
+      <div class="not-found-conteiner">
+        <p>Cargando Reparto...</p>
+      </div>
     </div>
   </div>
 </template>

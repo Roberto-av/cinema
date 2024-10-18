@@ -140,7 +140,6 @@ export const getActorDetails = async (actorId) => {
 export const getActorMovies  = async (actorId) => {
   try {
     const response = await api.get(`/person/${actorId}/movie_credits`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error al obtener peliculas de actor:", error);
@@ -151,6 +150,7 @@ export const getActorMovies  = async (actorId) => {
 export const getActorMoviesCombined  = async (actorId) => {
   try {
     const response = await api.get(`/person/${actorId}/combined_credits`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error al obtener peliculas de actor:", error);

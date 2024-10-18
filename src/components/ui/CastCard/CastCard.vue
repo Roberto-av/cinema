@@ -1,13 +1,13 @@
 <template>
   <div class="cast-card">
     <router-link :to="`/person/${actor.id}`">
-    <img
-      :src="getProfileUrl(actor.profile_path)"
-      :alt="actor.name"
-      class="actor-image"
-    />
-    <h4 class="actor-name">{{ actor.name }}</h4>
-  </router-link>
+      <img
+        :src="getProfileUrl(actor.profile_path)"
+        :alt="actor.name"
+        class="actor-image"
+      />
+      <h4 class="actor-name">{{ actor.name }}</h4>
+    </router-link>
   </div>
 </template>
 
@@ -22,7 +22,9 @@ export default {
   },
   methods: {
     getProfileUrl(path) {
-      return path ? `https://image.tmdb.org/t/p/w300${path}` : null;
+      return path
+        ? `https://image.tmdb.org/t/p/w300${path}`
+        : "/src/assets/img/not.jpg";
     },
   },
 };

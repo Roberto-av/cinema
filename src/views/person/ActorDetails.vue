@@ -92,18 +92,26 @@
             <tr>
               <th>Año</th>
               <th>Título</th>
+              <th>Tipo</th>
               <th>Papel</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="movie in actorMovies" :key="movie.id">
-              <td>{{ new Date(movie.release_date).getFullYear() }}</td>
+            <tr v-for="item in actorMovies" :key="item.id">
               <td>
-                <router-link class="link" :to="`/movie/${movie.id}`">{{
-                  movie.title
+                {{
+                  new Date(
+                    item.release_date || item.first_air_date
+                  ).getFullYear() || "-"
+                }}
+              </td>
+              <td>
+                <router-link class="link" :to="`/movie/${item.id}`">{{
+                  item.title || item.name || "-"
                 }}</router-link>
               </td>
-              <td>{{ movie.character }}</td>
+              <td>{{ item.media_type === "movie" ? "Película" : "Serie" }}</td>
+              <td>{{ item.character || "-" }}</td>
             </tr>
           </tbody>
         </table>
@@ -142,9 +150,9 @@ export default {
     };
   },
   methods: {
-    async fetchActorDetails() {
-      const actorId = this.$route.params.id;
+    async fetchData() {
       this.isLoading = true;
+      const actorId = this.$route.params.id;
       try {
         const [details, movies, socials] = await Promise.all([
           getActorDetails(actorId),
@@ -154,17 +162,7 @@ export default {
         this.actor = details;
         this.actorMovies = movies.cast;
         this.actorSocials = socials;
-      } catch (error) {
-        console.error("Error al obtener los detalles del actor:", error);
-        this.actor = null;
-      } finally {
-        this.isLoading = false;
-      }
-    },
-    async fetchRecommendedMovies() {
-      const actorId = this.$route.params.id;
-      this.apiCallCount++;
-      try {
+
         const recommendations = await getActorMovies(actorId);
         const moviesWithDetails = await Promise.all(
           recommendations.cast.map(async (movie) => {
@@ -181,17 +179,16 @@ export default {
           .sort((a, b) => b.popularity - a.popularity)
           .slice(0, 20);
       } catch (error) {
-        console.error("Error al cargar las películas recomendadas:", error);
-        this.listActorMovies = [];
+        console.error("Error al obtener los detalles del actor:", error);
+        this.actor = null;
       } finally {
-        this.apiCallCount--;
-        this.checkLoading();
+        this.isLoading = false;
       }
     },
     getActorImageUrl(path) {
       return path
         ? `https://image.tmdb.org/t/p/w500${path}`
-        : "/img/notFound.png";
+        : "/src/assets/img/not.jpg";
     },
     formatDate(date) {
       if (!date) return "-";
@@ -225,15 +222,9 @@ export default {
     totalCredits(movies) {
       return movies.length;
     },
-    checkLoading() {
-      if (this.apiCallCount === 0) {
-        this.isLoading = false;
-      }
-    },
   },
   mounted() {
-    this.fetchActorDetails();
-    this.fetchRecommendedMovies();
+    this.fetchData();
   },
 };
 </script>

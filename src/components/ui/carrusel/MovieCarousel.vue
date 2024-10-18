@@ -5,7 +5,7 @@
       <button class="nav-button prev" @click="slideLeft"><</button>
       <swiper
         ref="swiperRef"
-        :slides-per-view="currentSlidesPerView"
+        :slides-per-view="adjustedSlidesPerView"
         :space-between="20"
         pagination
         @swiper="onSwiper"
@@ -15,11 +15,20 @@
         <swiper-slide v-for="movie in movies" :key="movie.id">
           <MovieCard :movie="movie" class="movie-card" />
         </swiper-slide>
+        <swiper-slide
+          v-if="movies.length < slidesPerView"
+          v-for="n in slidesPerView - movies.length"
+          :key="`empty-${n}`"
+        >
+          <div class="empty-card"></div>
+        </swiper-slide>
       </swiper>
       <button class="nav-button next" @click="slideRight">></button>
     </div>
     <div v-if="movies.length === 0">
-      <p>Cargando películas...</p>
+      <div class="not-found-conteiner">
+        <p>Cargando películas...</p>
+      </div>
     </div>
   </div>
 </template>
@@ -58,8 +67,12 @@ export default {
   data() {
     return {
       swiperInstance: null,
-      currentSlidesPerView: this.slidesPerView,
     };
+  },
+  computed: {
+    adjustedSlidesPerView() {
+      return Math.min(this.slidesPerView, this.movies.length);
+    },
   },
   methods: {
     slideLeft() {
@@ -74,11 +87,6 @@ export default {
     },
     onSwiper(swiper) {
       this.swiperInstance = swiper;
-    },
-    setSlidesPerView(count) {
-      if (count >= 1) {
-        this.currentSlidesPerView = count;
-      }
     },
   },
 };

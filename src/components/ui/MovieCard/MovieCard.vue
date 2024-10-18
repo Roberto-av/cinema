@@ -42,7 +42,7 @@ export default {
     getImageUrl(path) {
       return path
         ? `https://image.tmdb.org/t/p/w500${path}`
-        : "/img/notFound.png";
+        : "/src/assets/img/not.jpg";
     },
     formatRating(rating) {
       return rating ? `${rating.toFixed(1)}` : "N/A";
