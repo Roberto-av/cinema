@@ -33,8 +33,17 @@
               v-for="genre in bannerMovie.genres"
               :key="genre.id"
               class="genre"
-              >{{ genre.name }}</span
             >
+              <router-link
+                :to="`/genre/${genre.id}-${genre.name.replace(
+                  /\s+/g,
+                  '-'
+                )}/?contentType=movie`"
+                class="keyword-link"
+              >
+                {{ genre.name }}
+              </router-link>
+            </span>
           </div>
           <p class="banner-synopsis">{{ bannerMovie.overview }}</p>
         </div>

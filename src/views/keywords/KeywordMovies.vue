@@ -66,6 +66,8 @@ import {
   getMovieDetails,
   getTVShowsByKeyword,
   getShowDetails,
+  getMoviesByGenre,
+  getTVShowsByGenre,
 } from "../../services/api";
 import MovieCard from "../../components/ui/MovieCard/MovieCard.vue";
 import Loader from "../../components/ui/loader/Loader.vue";
@@ -83,7 +85,6 @@ export default {
       totalResults: 0,
       isLoading: true,
       apiCallCount: 0,
-      limit: 10,
       currentPage: 1,
       isLoadingMore: false,
       contentType: null,
@@ -91,41 +92,52 @@ export default {
     };
   },
   methods: {
-    async fetchItemsByKeyword(page = 1) {
-      const keywordId = this.$route.params.id;
-      const keywordName = this.$route.params.name.replace(/-/g, " ");
-      this.keywordName = keywordName;
+    async fetchItems(page = 1) {
+      const id = this.$route.params.id;
+      const name = this.$route.params.name.replace(/-/g, " ");
+      this.keywordName = name;
 
       this.isLoading = true;
       this.apiCallCount++;
       try {
         let fetchedItems;
         if (this.contentType === "movie") {
-          const keyWordsMovies = await getMoviesByKeyword(
-            keywordId,
-            page,
-            this.sortOrder
-          );
-          fetchedItems = await Promise.all(
-            keyWordsMovies.results.map((movie) => getMovieDetails(movie.id))
-          );
-          this.totalResults = keyWordsMovies.total_results;
+          // Si se está buscando películas
+          if (this.isKeywordSearch) {
+            const keyWordsMovies = await getMoviesByKeyword(id, page, this.sortOrder);
+            fetchedItems = await Promise.all(
+              keyWordsMovies.results.map((movie) => getMovieDetails(movie.id))
+            );
+            this.totalResults = keyWordsMovies.total_results;
+          } else {
+            // Si se está buscando por género
+            const genreMovies = await getMoviesByGenre(id, page, this.sortOrder);
+            fetchedItems = await Promise.all(
+              genreMovies.results.map((movie) => getMovieDetails(movie.id))
+            );
+            this.totalResults = genreMovies.total_results;
+          }
         } else {
-          const keyWordsTVShows = await getTVShowsByKeyword(
-            keywordId,
-            page,
-            this.sortOrder
-          );
-          fetchedItems = await Promise.all(
-            keyWordsTVShows.results.map((show) => getShowDetails(show.id))
-          );
-          this.totalResults = keyWordsTVShows.total_results;
+          // Si se está buscando series
+          if (this.isKeywordSearch) {
+            const keyWordsTVShows = await getTVShowsByKeyword(id, page, this.sortOrder);
+            fetchedItems = await Promise.all(
+              keyWordsTVShows.results.map((show) => getShowDetails(show.id))
+            );
+            this.totalResults = keyWordsTVShows.total_results;
+          } else {
+            // Si se está buscando por género
+            const genreTVShows = await getTVShowsByGenre(id, page, this.sortOrder);
+            fetchedItems = await Promise.all(
+              genreTVShows.results.map((show) => getShowDetails(show.id))
+            );
+            this.totalResults = genreTVShows.total_results;
+          }
         }
 
-        this.items =
-          page === 1 ? fetchedItems : [...this.items, ...fetchedItems];
+        this.items = page === 1 ? fetchedItems : [...this.items, ...fetchedItems];
       } catch (error) {
-        console.error("Error al cargar elementos por palabra clave:", error);
+        console.error("Error al cargar elementos:", error);
       } finally {
         this.apiCallCount--;
         this.checkLoading();
@@ -137,18 +149,17 @@ export default {
     async loadMore() {
       this.isLoadingMore = true;
       this.currentPage++;
-      await this.fetchItemsByKeyword(this.currentPage);
+      await this.fetchItems(this.currentPage);
       this.isLoadingMore = false;
     },
     resetMovies() {
       const queryParams = { contentType: this.contentType };
-
       if (this.sortOrder !== "desc") {
         queryParams.sortOrder = this.sortOrder;
       }
 
       this.$router.replace({
-        name: "KeywordMovies",
+        name: this.$route.name, // Mantiene el mismo nombre de ruta
         params: {
           id: this.$route.params.id,
           name: this.$route.params.name,
@@ -158,14 +169,15 @@ export default {
 
       this.currentPage = 1;
       this.items = [];
-      this.fetchItemsByKeyword();
+      this.fetchItems();
     },
   },
   mounted() {
     const contentTypeFromParams = this.$route.query.contentType || "movie";
     this.contentType = contentTypeFromParams;
     this.sortOrder = this.$route.query.sortOrder || "desc";
-    this.fetchItemsByKeyword();
+    this.isKeywordSearch = this.$route.name === 'KeywordMovies'; // Verifica si es búsqueda por palabra clave
+    this.fetchItems();
     window.scrollTo(0, 0);
   },
 };

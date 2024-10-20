@@ -179,7 +179,7 @@ export const getMoviesByKeyword = async (keywordId, page = 1, sort) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error al obtener palabras claves de película:", error);
+    console.error("Error al obtener películas con palabra clave :", error);
     throw error;
   }
 };
@@ -195,7 +195,39 @@ export const getTVShowsByKeyword = async (keywordId, page = 1, sort) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error al obtener palabras claves de serie:", error);
+    console.error("Error al obtener series con palabra clave :", error);
+    throw error;
+  }
+};
+
+export const getMoviesByGenre = async (genreId, page = 1, sort) => {
+  try {
+    const response = await api.get(`/discover/movie`, {
+      params: {
+        with_genres:genreId,
+        page: page,
+        sort_by: `popularity.${sort}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener películas con genero especifico:", error);
+    throw error;
+  }
+};
+
+export const getTVShowsByGenre = async (genreId, page = 1, sort) => {
+  try {
+    const response = await api.get(`/discover/tv`, {
+      params: {
+        with_genres:genreId,
+        page: page,
+        sort_by: `popularity.${sort}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener serie con genero especifico:", error);
     throw error;
   }
 };

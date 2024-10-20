@@ -72,6 +72,10 @@
   display: inline-block;
 }
 
+.genre:hover{
+  background-color: #5a34d4;
+}
+
 .rating-runtime {
   margin-top: 10px;
   font-size: 14px;

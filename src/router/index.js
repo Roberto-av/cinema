@@ -32,6 +32,12 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: "/genre/:id-:name/:contentType?/:sortOrder?",
+    name: "GenreMovies",
+    component: KeywordMovies,
+    meta: { requiresAuth: true },
+  },
+  {
     path: "/login",
     name: "Login",
     component: Login,

@@ -36,8 +36,16 @@
             :key="genre.id"
             class="genre"
           >
-            {{ genre.name
-            }}<span v-if="index !== movie.genres.length - 1"></span>
+            <router-link
+              :to="`/genre/${genre.id}-${genre.name.replace(
+                /\s+/g,
+                '-'
+              )}/?contentType=movie`"
+              class="keyword-link"
+            >
+              {{ genre.name }}
+            </router-link>
+            <span v-if="index !== movie.genres.length - 1"></span>
           </span>
         </div>
         <div class="buttons">
@@ -109,7 +117,13 @@
               :key="keyword.id"
               class="keyword"
             >
-              <router-link :to="`/keyword/${keyword.id}-${keyword.name.replace(/\s+/g, '-')}/?contentType=movie`" class="keyword-link">
+              <router-link
+                :to="`/keyword/${keyword.id}-${keyword.name.replace(
+                  /\s+/g,
+                  '-'
+                )}/?contentType=movie`"
+                class="keyword-link"
+              >
                 {{ keyword.name }}
               </router-link>
               <span v-if="index !== keyWords.length - 1"></span>
