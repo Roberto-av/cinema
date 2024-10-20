@@ -137,7 +137,7 @@ export const getActorDetails = async (actorId) => {
   }
 };
 
-export const getActorMovies  = async (actorId) => {
+export const getActorMovies = async (actorId) => {
   try {
     const response = await api.get(`/person/${actorId}/movie_credits`);
     return response.data;
@@ -147,7 +147,7 @@ export const getActorMovies  = async (actorId) => {
   }
 };
 
-export const getActorMoviesCombined  = async (actorId) => {
+export const getActorMoviesCombined = async (actorId) => {
   try {
     const response = await api.get(`/person/${actorId}/combined_credits`);
     console.log(response.data);
@@ -158,12 +158,44 @@ export const getActorMoviesCombined  = async (actorId) => {
   }
 };
 
-export const getActorExternalIds  = async (actorId) => {
+export const getActorExternalIds = async (actorId) => {
   try {
     const response = await api.get(`/person/${actorId}/external_ids`);
     return response.data;
   } catch (error) {
     console.error("Error al obtener peliculas de actor:", error);
+    throw error;
+  }
+};
+
+export const getMoviesByKeyword = async (keywordId, page = 1, sort) => {
+  try {
+    const response = await api.get(`/discover/movie`, {
+      params: {
+        with_keywords:keywordId,
+        page: page,
+        sort_by: `popularity.${sort}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener palabras claves de película:", error);
+    throw error;
+  }
+};
+
+export const getTVShowsByKeyword = async (keywordId, page = 1, sort) => {
+  try {
+    const response = await api.get(`/discover/tv`, {
+      params: {
+        with_keywords:keywordId,
+        page: page,
+        sort_by: `popularity.${sort}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener palabras claves de serie:", error);
     throw error;
   }
 };

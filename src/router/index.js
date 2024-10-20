@@ -4,6 +4,7 @@ import Home from "../views/home/Home.vue";
 import Login from "../views/Login/Login.vue";
 import MovieDetails from "../views/MovieDetails/MovieDetails.vue";
 import ActorDetails from "../views/person/ActorDetails.vue";
+import KeywordMovies from "../views/keywords/KeywordMovies.vue";
 
 const routes = [
   {
@@ -22,6 +23,12 @@ const routes = [
     path: "/person/:id",
     name: "ActorDetails",
     component: ActorDetails,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/keyword/:id-:name/:contentType?/:sortOrder?",
+    name: "KeywordMovies",
+    component: KeywordMovies,
     meta: { requiresAuth: true },
   },
   {

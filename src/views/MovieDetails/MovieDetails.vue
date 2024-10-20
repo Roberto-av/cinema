@@ -4,31 +4,61 @@
       <Loader />
     </div>
 
-    <div v-else class="movie-header" :style="{ backgroundImage: `url(${backgroundImage})` }">
-      <img v-if="movie" :src="getImageUrl(movie.poster_path)" :alt="movie.title" class="img-poster" />
+    <div
+      v-else
+      class="movie-header"
+      :style="{ backgroundImage: `url(${backgroundImage})` }"
+    >
+      <img
+        v-if="movie"
+        :src="getImageUrl(movie.poster_path)"
+        :alt="movie.title"
+        class="img-poster"
+      />
       <div class="movie-info">
         <h1 v-if="movie" class="title">{{ movie.title }}</h1>
         <div class="rating-runtime">
-          <span class="rating" v-if="movie">{{ formatRating(movie.vote_average) }} / 10</span>
+          <span class="rating" v-if="movie"
+            >{{ formatRating(movie.vote_average) }} / 10</span
+          >
           <span class="separator">|</span>
-          <span class="runtime" v-if="movie">{{ formatRuntime(movie.runtime) }}</span>
+          <span class="runtime" v-if="movie">{{
+            formatRuntime(movie.runtime)
+          }}</span>
           <span class="separator">•</span>
-          <span class="release-date" v-if="movie">{{ formatReleaseDate(movie.release_date) }}</span>
+          <span class="release-date" v-if="movie">{{
+            formatReleaseDate(movie.release_date)
+          }}</span>
         </div>
         <div class="genres" v-if="movie">
-          <span v-for="(genre, index) in movie.genres" :key="genre.id" class="genre">
-            {{ genre.name }}<span v-if="index !== movie.genres.length - 1"></span>
+          <span
+            v-for="(genre, index) in movie.genres"
+            :key="genre.id"
+            class="genre"
+          >
+            {{ genre.name
+            }}<span v-if="index !== movie.genres.length - 1"></span>
           </span>
         </div>
         <div class="buttons">
           <p class="reaction-text">Reaccionar</p>
           <button class="reaction-button" @click="handleVote">
             <span>
-              <img :src="userHasVoted ? '/src/assets/icons/HeartRed.svg' : '/src/assets/icons/Heart.svg'" alt="" class="icon" />
+              <img
+                :src="
+                  userHasVoted
+                    ? '/src/assets/icons/HeartRed.svg'
+                    : '/src/assets/icons/Heart.svg'
+                "
+                alt=""
+                class="icon"
+              />
             </span>
           </button>
         </div>
-        <p v-if="movie" class="synopsis">{{ movie.overview ? movie.overview : "Sin Sinopsis" }}</p>
+        <p v-if="movie" class="synopsis">
+          {{ movie.overview ? movie.overview : "Sin Sinopsis" }}
+        </p>
       </div>
     </div>
 
@@ -42,7 +72,12 @@
             <TrailerComponent :trailer="trailers" />
           </div>
           <div class="recommendations-section">
-            <MovieCarousel :movies="movieRecommendations" title="Recomendación" :slidesPerView="slidesPerView" :breakpoints="breakpoints" />
+            <MovieCarousel
+              :movies="movieRecommendations"
+              title="Recomendación"
+              :slidesPerView="slidesPerView"
+              :breakpoints="breakpoints"
+            />
           </div>
         </div>
         <div class="info-extra">
@@ -53,7 +88,9 @@
           </p>
           <p v-if="movie">
             <strong>IDIOMA ORIGINAL</strong>
-            <span class="info-extra-s">{{ formatLanguage(movie.original_language) }}</span>
+            <span class="info-extra-s">{{
+              formatLanguage(movie.original_language)
+            }}</span>
           </p>
           <p v-if="movie">
             <strong>PRESUPUESTO</strong>
@@ -61,12 +98,21 @@
           </p>
           <p v-if="movie">
             <strong>INGRESOS</strong>
-            <span class="info-extra-s">{{ formatCurrency(movie.revenue) }}</span>
+            <span class="info-extra-s">{{
+              formatCurrency(movie.revenue)
+            }}</span>
           </p>
           <div class="keywords" v-if="movie">
             <p><strong>Palabras Clave</strong></p>
-            <span v-for="(keyword, index) in keyWords" :key="keyword.id" class="keyword">
-              {{ keyword.name }}<span v-if="index !== keyWords.length - 1"></span>
+            <span
+              v-for="(keyword, index) in keyWords"
+              :key="keyword.id"
+              class="keyword"
+            >
+              <router-link :to="`/keyword/${keyword.id}-${keyword.name.replace(/\s+/g, '-')}/?contentType=movie`" class="keyword-link">
+                {{ keyword.name }}
+              </router-link>
+              <span v-if="index !== keyWords.length - 1"></span>
             </span>
           </div>
         </div>
@@ -150,9 +196,10 @@ export default {
       this.apiCallCount++;
       try {
         const backdrops = await getMovieImages(movieId);
-        this.backgroundImage = backdrops.length > 0 
-          ? `https://image.tmdb.org/t/p/original${backdrops[0].file_path}` 
-          : "";
+        this.backgroundImage =
+          backdrops.length > 0
+            ? `https://image.tmdb.org/t/p/original${backdrops[0].file_path}`
+            : "";
       } catch (error) {
         console.error("Error al obtener las imágenes de la película:", error);
       } finally {

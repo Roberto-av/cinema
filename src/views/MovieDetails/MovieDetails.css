@@ -202,6 +202,10 @@
   word-break: break-word;
 }
 
+.keyword:hover{
+  background-color: #404568;
+}
+
 .trailer-section{
   padding: 20px;
   margin-top: -80px;
@@ -211,6 +215,15 @@
 .recommendations-section{
   padding: 20px;
   width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  transform: none;
 }
 
 @media (min-width: 576px) {
