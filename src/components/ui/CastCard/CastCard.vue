@@ -7,6 +7,7 @@
         class="actor-image"
       />
       <h4 class="actor-name">{{ actor.name }}</h4>
+      <p class="actor-character">{{ actor.character }}</p>
     </router-link>
   </div>
 </template>

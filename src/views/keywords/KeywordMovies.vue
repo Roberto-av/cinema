@@ -159,7 +159,7 @@ export default {
       }
 
       this.$router.replace({
-        name: this.$route.name, // Mantiene el mismo nombre de ruta
+        name: this.$route.name, 
         params: {
           id: this.$route.params.id,
           name: this.$route.params.name,
@@ -176,7 +176,7 @@ export default {
     const contentTypeFromParams = this.$route.query.contentType || "movie";
     this.contentType = contentTypeFromParams;
     this.sortOrder = this.$route.query.sortOrder || "desc";
-    this.isKeywordSearch = this.$route.name === 'KeywordMovies'; // Verifica si es búsqueda por palabra clave
+    this.isKeywordSearch = this.$route.name === 'KeywordMovies';
     this.fetchItems();
     window.scrollTo(0, 0);
   },

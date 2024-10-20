@@ -106,9 +106,9 @@
                 }}
               </td>
               <td>
-                <router-link class="link" :to="`/movie/${item.id}`">{{
-                  item.title || item.name || "-"
-                }}</router-link>
+                <router-link class="link" :to="`/${item.name ? 'tv' : 'movie'}/${item.id}`">
+                  {{item.title || item.name || "-"}}
+                </router-link>
               </td>
               <td>{{ item.media_type === "movie" ? "Película" : "Serie" }}</td>
               <td>{{ item.character || "-" }}</td>

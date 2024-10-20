@@ -1,0 +1,62 @@
+.season-card {
+  padding: 1rem;
+  background-color: #001f3f;
+  color: white;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  display: flex;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.season-header {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: flex-start;
+}
+
+.season-poster {
+  width: 180px;
+  height: auto;
+  margin-right: 1rem;
+  border-radius: 8px;
+}
+
+.season-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  font-size: 0.9rem;
+}
+
+.rating-episodes {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  font-size: 0.8rem;
+}
+
+.rating {
+  color: #10ab7b;
+}
+
+.episodes {
+  color: #888;
+}
+
+.release-date {
+  color: #888;
+}
+
+.separator {
+  color: #888;
+  margin: 0 0.5rem;
+}
+
+.synopsis {
+  margin-top: 0.5rem;
+  margin-left: 0;
+  font-size: 0.9rem;
+  max-width: 100%;
+  align-self: flex-start;
+}

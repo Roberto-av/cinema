@@ -1,6 +1,6 @@
 <template>
   <div class="movie-card">
-    <router-link :to="`/movie/${movie.id}`">
+    <router-link :to="`/${movie.first_air_date ? 'tv' : 'movie'}/${movie.id}`">
       <div class="image-container">
         <img :src="getImageUrl(movie.poster_path)" :alt="movie.title" />
         <span class="release-year">{{
@@ -11,7 +11,7 @@
             : "-"
         }}</span>
       </div>
-      <h3>{{ movie.title ? movie.title : movie.original_name }}</h3>
+      <h3>{{ movie.title ? movie.title : movie.name }}</h3>
       <div class="movie-info">
         <span class="rating">{{ formatRating(movie.vote_average) }} / 10</span>
         <span class="separator">•</span>
@@ -45,7 +45,7 @@ export default {
         : "/src/assets/img/not.jpg";
     },
     formatRating(rating) {
-      return rating ? `${rating.toFixed(1)}` : "N/A";
+      return rating ? `${rating.toFixed(1)}` : "NA";
     },
     formatRuntime(runtime) {
       if (!runtime) return "-";

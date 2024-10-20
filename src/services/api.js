@@ -65,7 +65,11 @@ export async function getMovieDetails(movieId) {
 
 export const getShowDetails = async (tvId) => {
   try {
-    const response = await api.get(`/tv/${tvId}`);
+    const response = await api.get(`/tv/${tvId}`, {
+      params: {
+        language: "es-ES",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error al obtener los detalles de la serie:", error);
@@ -127,6 +131,60 @@ export const getMovieKeyWords = async (movieId) => {
   }
 };
 
+export const getShowImages = async (showId) => {
+  try {
+    const response = await api.get(`/tv/${showId}/images`, {
+      params: {
+        include_image_language: "en",
+      },
+    });
+    return response.data.backdrops;
+  } catch (error) {
+    console.error("Error al obtener imágenes de la serie:", error);
+    throw error;
+  }
+};
+
+export const getShowCredits = async (showId) => {
+  try {
+    const response = await api.get(`/tv/${showId}/credits`);
+    return response.data.cast;
+  } catch (error) {
+    console.error("Error al obtener el reparto de la serie:", error);
+    throw error;
+  }
+};
+
+export const getShowVideos = async (showId) => {
+  try {
+    const response = await api.get(`/tv/${showId}/videos`);
+    return response.data.results;
+  } catch (error) {
+    console.error("Error al obtener los trailers de la serie:", error);
+    throw error;
+  }
+};
+
+export const getShowRecommendations = async (showId) => {
+  try {
+    const response = await api.get(`/tv/${showId}/recommendations`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener recomendaciones de la serie:", error);
+    throw error;
+  }
+};
+
+export const getShowKeyWords = async (showId) => {
+  try {
+    const response = await api.get(`/tv/${showId}/keywords`);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener palabras claves de serie:", error);
+    throw error;
+  }
+};
+
 export const getActorDetails = async (actorId) => {
   try {
     const response = await api.get(`/person/${actorId}`);
@@ -172,7 +230,7 @@ export const getMoviesByKeyword = async (keywordId, page = 1, sort) => {
   try {
     const response = await api.get(`/discover/movie`, {
       params: {
-        with_keywords:keywordId,
+        with_keywords: keywordId,
         page: page,
         sort_by: `popularity.${sort}`,
       },
@@ -188,7 +246,7 @@ export const getTVShowsByKeyword = async (keywordId, page = 1, sort) => {
   try {
     const response = await api.get(`/discover/tv`, {
       params: {
-        with_keywords:keywordId,
+        with_keywords: keywordId,
         page: page,
         sort_by: `popularity.${sort}`,
       },
@@ -204,7 +262,7 @@ export const getMoviesByGenre = async (genreId, page = 1, sort) => {
   try {
     const response = await api.get(`/discover/movie`, {
       params: {
-        with_genres:genreId,
+        with_genres: genreId,
         page: page,
         sort_by: `popularity.${sort}`,
       },
@@ -220,7 +278,7 @@ export const getTVShowsByGenre = async (genreId, page = 1, sort) => {
   try {
     const response = await api.get(`/discover/tv`, {
       params: {
-        with_genres:genreId,
+        with_genres: genreId,
         page: page,
         sort_by: `popularity.${sort}`,
       },
@@ -308,6 +366,54 @@ export const deleteVote = async (movieId, sessionId) => {
 export const getAccountStates = async (movieId, sessionId) => {
   try {
     const response = await api.get(`/movie/${movieId}/account_states`, {
+      params: {
+        session_id: sessionId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el estado de la cuenta:", error);
+    throw error;
+  }
+};
+
+export const postVoteShow = async (showId, sessionId, { value }) => {
+  try {
+    const response = await api.post(
+      `/tv/${showId}/rating`,
+      {
+        value,
+      },
+      {
+        params: {
+          session_id: sessionId,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al votar:", error);
+    throw error;
+  }
+};
+
+export const deleteVoteShow = async (showId, sessionId) => {
+  try {
+    const response = await api.delete(`/tv/${showId}/rating`, {
+      params: {
+        session_id: sessionId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al eliminar el voto:", error);
+    throw error;
+  }
+};
+
+export const getAccountStatesShow = async (showId, sessionId) => {
+  try {
+    const response = await api.get(`/tv/${showId}/account_states`, {
       params: {
         session_id: sessionId,
       },
