@@ -420,6 +420,28 @@ export const deleteVoteShow = async (showId, sessionId) => {
   }
 };
 
+export const addFavoriteMedia = async (showId, sessionId, { media_type, media_id, favorite }) => {
+  try {
+    const response = await api.post(
+      `/tv/${showId}/rating`,
+      {
+        media_type,
+        media_id,
+        favorite,
+      },
+      {
+        params: {
+          session_id: sessionId,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al añadir a favoritos:", error);
+    throw error;
+  }
+};
+
 export const getAccountStatesShow = async (showId, sessionId) => {
   try {
     const response = await api.get(`/tv/${showId}/account_states`, {
@@ -430,6 +452,43 @@ export const getAccountStatesShow = async (showId, sessionId) => {
     return response.data;
   } catch (error) {
     console.error("Error al obtener el estado de la cuenta:", error);
+    throw error;
+  }
+};
+
+export const postFavorite = async (accountId, sessionId, { mediaType, mediaId, favorite }) => {
+  try {
+    const response = await api.post(
+      `/account/${accountId}/favorite`,
+      {
+        media_type: mediaType,
+        media_id: mediaId,
+        favorite: favorite,
+      },
+      {
+        params: {
+          session_id: sessionId,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al marcar como favorito:", error);
+    throw error;
+  }
+};
+
+
+export const getAccountDetails = async (sessionId) => {
+  try {
+    const response = await api.get('/account', {
+      params: {
+        session_id: sessionId,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener detalles de la cuenta:", error);
     throw error;
   }
 };
