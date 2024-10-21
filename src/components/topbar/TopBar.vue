@@ -33,6 +33,7 @@ export default {
     },
     logout() {
       localStorage.removeItem("auth");
+      localStorage.removeItem("session_id");
       this.$router.push({ name: "Login" });
     },
   },
