@@ -52,12 +52,8 @@
           <button class="reaction-button" @click="handleFavorite">
             <span>
               <img
-                :src="
-                  userHasFavorited
-                    ? '/src/assets/icons/HeartRed.svg'
-                    : '/src/assets/icons/Heart.svg'
-                "
-                alt=""
+                :src="userHasFavorited ? HeartRed : Heart"
+                alt="Favorite"
                 class="icon"
               />
             </span>
@@ -65,11 +61,7 @@
           <button class="reaction-button" @click="handleRatingClick">
             <span>
               <img
-                :src="
-                  userHasVoted
-                    ? '/src/assets/icons/StarFilled.svg'
-                    : '/src/assets/icons/StarRegular.svg'
-                "
+                :src="userHasVoted ? StarFilled : StarRegular"
                 alt="Rate"
                 class="icon"
               />
@@ -160,7 +152,7 @@ import {
   postVote,
   postFavorite,
   deleteVote,
-  getAccountStatesShow,
+  getAccountStates,
   getAccountDetails,
   getMovieCredits,
   getMovieKeyWords,
@@ -172,6 +164,14 @@ import CastCarousel from "../../components/ui/carrusel/CastCarousel.vue";
 import TrailerComponent from "../../components/ui/Trailer/TrailerComponent.vue";
 import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
 import RaitingModal from "../../components/ui/RaitingModal/RaitingModal.vue";
+
+import StarFilled from "../../assets/icons/StarFilled.svg";
+import StarRegular from "../../assets/icons/StarRegular.svg";
+
+import HeartRed from "../../assets/icons/HeartRed.svg";
+import Heart from "../../assets/icons/Heart.svg";
+
+import not from "../../assets/img/not.jpg";
 
 export default {
   name: "MovieDetails",
@@ -196,6 +196,11 @@ export default {
       keyWords: [],
       trailers: [],
       movieRecommendations: [],
+      HeartRed,
+      Heart,
+      StarFilled,
+      StarRegular,
+      not,
       slidesPerView: 5,
       breakpoints: {
         1500: { slidesPerView: 5 },
@@ -365,7 +370,7 @@ export default {
 
       if (sessionId) {
         try {
-          const accountStates = await this.getAccountStates(movieId, sessionId);
+          const accountStates = await getAccountStates(movieId, sessionId);
           this.userHasVoted = accountStates.rated;
           this.userHasFavorited = accountStates.favorite;
         } catch (error) {
@@ -431,7 +436,7 @@ export default {
     getImageUrl(path) {
       return path
         ? `https://image.tmdb.org/t/p/w500${path}`
-        : "/src/assets/img/not.jpg";
+        : this.not;
     },
     formatStatus(status) {
       const statusMapping = {

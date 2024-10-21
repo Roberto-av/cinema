@@ -48,12 +48,8 @@
           <button class="reaction-button" @click="handleFavorite">
             <span>
               <img
-                :src="
-                  userHasFavorited
-                    ? '/src/assets/icons/HeartRed.svg'
-                    : '/src/assets/icons/Heart.svg'
-                "
-                alt=""
+                :src="userHasFavorited ? HeartRed : Heart"
+                alt="Favorite"
                 class="icon"
               />
             </span>
@@ -61,11 +57,7 @@
           <button class="reaction-button" @click="handleRatingClick">
             <span>
               <img
-                :src="
-                  userHasVoted
-                    ? '/src/assets/icons/StarFilled.svg'
-                    : '/src/assets/icons/StarRegular.svg'
-                "
+                :src="userHasVoted ? StarFilled : StarRegular"
                 alt="Rate"
                 class="icon"
               />
@@ -194,6 +186,14 @@ import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
 import SeasonCard from "../../components/ui/SeasonCard/SeasonCard.vue";
 import RaitingModal from "../../components/ui/RaitingModal/RaitingModal.vue";
 
+import StarFilled from "../../assets/icons/StarFilled.svg";
+import StarRegular from "../../assets/icons/StarRegular.svg";
+
+import HeartRed from "../../assets/icons/HeartRed.svg";
+import Heart from "../../assets/icons/Heart.svg";
+
+import not from "../../assets/img/not.jpg";
+
 export default {
   name: "ShowDetails",
   components: {
@@ -218,6 +218,11 @@ export default {
       keyWords: [],
       trailers: [],
       showRecommendations: [],
+      HeartRed,
+      Heart,
+      StarFilled,
+      StarRegular,
+      not,
       showAllSeasons: false,
       slidesPerView: 5,
       breakpoints: {
@@ -452,9 +457,7 @@ export default {
       });
     },
     getImageUrl(path) {
-      return path
-        ? `https://image.tmdb.org/t/p/w500${path}`
-        : "/src/assets/img/not.jpg";
+      return path ? `https://image.tmdb.org/t/p/w500${path}` : this.not;
     },
     formatStatus(status) {
       const statusMapping = {

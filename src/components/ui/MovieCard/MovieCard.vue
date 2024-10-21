@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import not from "../../../assets/img/not.jpg";
+
 export default {
   name: "MovieCard",
   props: {
@@ -38,11 +40,16 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      not,
+    };
+  },
   methods: {
     getImageUrl(path) {
       return path
         ? `https://image.tmdb.org/t/p/w500${path}`
-        : "/src/assets/img/not.jpg";
+        : this.not;
     },
     formatRating(rating) {
       return rating ? `${rating.toFixed(1)}` : "NA";

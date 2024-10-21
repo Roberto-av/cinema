@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import not from "../../../assets/img/not.jpg";
+
 export default {
   name: "SeasonCard",
   props: {
@@ -50,13 +52,18 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      not,
+    };
+  },
   methods: {
     getImageUrl(season) {
       return this.isEpisode && season.still_path
         ? `https://image.tmdb.org/t/p/w500${season.still_path}`
         : season.poster_path
         ? `https://image.tmdb.org/t/p/w500${season.poster_path}`
-        : "/src/assets/img/not.jpg";
+        : this.not;
     },
     formatRating(rating) {
       return rating ? `${rating.toFixed(1)}` : "NA";

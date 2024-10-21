@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import not from "../../../assets/img/not.jpg";
+
 export default {
   name: "CastCard",
   props: {
@@ -21,11 +23,16 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      not,
+    };
+  },
   methods: {
     getProfileUrl(path) {
       return path
         ? `https://image.tmdb.org/t/p/w300${path}`
-        : "/src/assets/img/not.jpg";
+        : this.not;
     },
   },
 };

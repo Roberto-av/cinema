@@ -140,6 +140,7 @@ import {
 import Loader from "../../components/ui/loader/Loader.vue";
 import Accordion from "../../components/ui/accordion/Accordion.vue";
 import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
+import not from "../../assets/img/not.jpg";
 import pLimit from "p-limit";
 
 const limit = pLimit(3);
@@ -160,6 +161,7 @@ export default {
       isLoading: true,
       actorSocials: null,
       creditsToShow: 10,
+      not,
     };
   },
   mounted() {
@@ -208,7 +210,7 @@ export default {
     getActorImageUrl(path) {
       return path
         ? `https://image.tmdb.org/t/p/w500${path}`
-        : "/src/assets/img/not.jpg";
+        : this.not;
     },
     formatDate(date) {
       if (!date) return "-";

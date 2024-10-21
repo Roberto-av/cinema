@@ -11,11 +11,7 @@
           :aria-label="'Calificar con ' + star + ' estrellas'"
         >
           <img
-            :src="
-              star <= selectedRating
-                ? '/src/assets/icons/StarFilled.svg'
-                : '/src/assets/icons/StarRegular.svg'
-            "
+            :src="star <= selectedRating ? StarFilled : StarRegular"
             alt="Rate"
             class="icon"
           />
@@ -30,6 +26,9 @@
 </template>
 
 <script>
+import StarFilled from "../../../assets/icons/StarFilled.svg";
+import StarRegular from "../../../assets/icons/StarRegular.svg";
+
 export default {
   name: "RatingModal",
   props: {
@@ -41,6 +40,8 @@ export default {
   data() {
     return {
       selectedRating: 0,
+      StarFilled,
+      StarRegular,
     };
   },
   methods: {
