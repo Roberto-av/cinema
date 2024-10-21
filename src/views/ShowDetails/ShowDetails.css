@@ -100,10 +100,11 @@
 }
 
 .buttons {
-  margin-top: 16px;
+  margin-top: 20px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 
 .reaction-text {
@@ -154,7 +155,7 @@
   padding: 20px;
 }
 
-.season-section{
+.season-section {
   width: 100%;
   margin-top: -50px;
   padding: 20px;
@@ -164,7 +165,7 @@
   gap: 1rem;
 }
 
-.season-card{
+.season-card {
   width: 100%;
   box-sizing: border-box;
 }

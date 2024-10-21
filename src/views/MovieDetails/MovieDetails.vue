@@ -160,7 +160,7 @@ import {
   postVote,
   postFavorite,
   deleteVote,
-  getAccountStates,
+  getAccountStatesShow,
   getAccountDetails,
   getMovieCredits,
   getMovieKeyWords,
@@ -323,7 +323,7 @@ export default {
         await postVote(movieId, sessionId, { value: rating });
         this.userHasVoted = true;
         this.selectedRating = rating;
-        this.closeRatingModal(); // Cerrar el modal después de confirmar
+        this.closeRatingModal();
       } catch (error) {
         console.error("Error al enviar la calificación:", error);
       }

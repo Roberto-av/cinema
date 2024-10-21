@@ -45,12 +45,11 @@
           </span>
         </div>
         <div class="buttons">
-          <p class="reaction-text">Reaccionar</p>
-          <button class="reaction-button" @click="handleVote">
+          <button class="reaction-button" @click="handleFavorite">
             <span>
               <img
                 :src="
-                  userHasVoted
+                  userHasFavorited
                     ? '/src/assets/icons/HeartRed.svg'
                     : '/src/assets/icons/Heart.svg'
                 "
@@ -59,7 +58,26 @@
               />
             </span>
           </button>
+          <button class="reaction-button" @click="handleRatingClick">
+            <span>
+              <img
+                :src="
+                  userHasVoted
+                    ? '/src/assets/icons/StarFilled.svg'
+                    : '/src/assets/icons/StarRegular.svg'
+                "
+                alt="Rate"
+                class="icon"
+              />
+            </span>
+          </button>
         </div>
+        <RaitingModal
+          v-if="!userHasVoted"
+          :show="showRatingModal"
+          @close="closeRatingModal"
+          @confirm="submitRating"
+        />
         <p v-if="show" class="synopsis">
           {{ show.overview ? show.overview : "Sin Sinopsis" }}
         </p>
@@ -162,6 +180,8 @@ import {
   postVoteShow,
   deleteVoteShow,
   getAccountStatesShow,
+  getAccountDetails,
+  postFavorite,
   getShowCredits,
   getShowKeyWords,
   getShowVideos,
@@ -172,6 +192,7 @@ import CastCarousel from "../../components/ui/carrusel/CastCarousel.vue";
 import TrailerComponent from "../../components/ui/Trailer/TrailerComponent.vue";
 import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
 import SeasonCard from "../../components/ui/SeasonCard/SeasonCard.vue";
+import RaitingModal from "../../components/ui/RaitingModal/RaitingModal.vue";
 
 export default {
   name: "ShowDetails",
@@ -181,6 +202,7 @@ export default {
     TrailerComponent,
     MovieCarousel,
     SeasonCard,
+    RaitingModal,
   },
   data() {
     return {
@@ -189,6 +211,9 @@ export default {
       isLoading: true,
       apiCallCount: 0,
       userHasVoted: false,
+      userHasFavorited: false,
+      showRatingModal: false,
+      selectedRating: 0,
       cast: [],
       keyWords: [],
       trailers: [],
@@ -313,23 +338,47 @@ export default {
         this.checkLoading();
       }
     },
-    async handleVote() {
+    async submitRating(rating) {
       const showId = this.show.id;
       const sessionId = localStorage.getItem("session_id");
 
-      if (!this.userHasVoted) {
+      try {
+        await postVoteShow(showId, sessionId, { value: rating });
+        this.userHasVoted = true;
+        this.selectedRating = rating;
+        this.closeRatingModal();
+      } catch (error) {
+        console.error("Error al enviar la calificación:", error);
+      }
+    },
+    async handleFavorite() {
+      const showId = this.show.id;
+      const sessionId = localStorage.getItem("session_id");
+      const accountId = await getAccountDetails(sessionId).then(
+        (data) => data.id
+      );
+
+      if (!this.userHasFavorited) {
         try {
-          await postVoteShow(showId, sessionId, { value: 10 });
-          this.userHasVoted = true;
+          await postFavorite(accountId, sessionId, {
+            mediaType: "tv",
+            mediaId: showId,
+            favorite: true,
+          });
+          this.userHasFavorited = true;
         } catch (error) {
-          console.error("Error al votar:", error);
+          console.error("Error al agregar a favoritos:", error);
         }
       } else {
         try {
-          await deleteVoteShow(showId, sessionId);
-          this.userHasVoted = false;
+          await postFavorite(accountId, sessionId, {
+            mediaType: "tv",
+            mediaId: showId,
+            favorite: false,
+          });
+          this.userHasFavorited = false;
         } catch (error) {
-          console.error("Error al eliminar el voto:", error);
+          console.error("Error al eliminar de favoritos:", error);
         }
       }
     },
@@ -339,8 +388,9 @@ export default {
 
       if (sessionId) {
         try {
-          const accountStates = await this.getAccountStates(showId, sessionId);
+          const accountStates = await getAccountStatesShow(showId, sessionId);
           this.userHasVoted = accountStates.rated;
+          this.userHasFavorited = accountStates.favorite;
         } catch (error) {
           console.error("Error al verificar el estado del voto:", error);
         }
@@ -354,6 +404,32 @@ export default {
         console.error("Error al obtener el estado de la cuenta:", error);
         return { rated: false };
       }
+    },
+    async deleteRating() {
+      const showId = this.show.id;
+      const sessionId = localStorage.getItem("session_id");
+
+      try {
+        await deleteVoteShow(showId, sessionId);
+        this.userHasVoted = false;
+        this.selectedRating = 0;
+        console.log("Voto eliminado exitosamente.");
+      } catch (error) {
+        console.error("Error al eliminar el voto:", error);
+      }
+    },
+    async handleRatingClick() {
+      if (this.userHasVoted) {
+        await this.deleteRating();
+      } else {
+        this.openRatingModal();
+      }
+    },
+    openRatingModal() {
+      this.showRatingModal = true;
+    },
+    closeRatingModal() {
+      this.showRatingModal = false;
     },
     checkLoading() {
       this.isLoading = this.apiCallCount > 0;
