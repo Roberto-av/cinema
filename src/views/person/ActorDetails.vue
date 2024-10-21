@@ -97,7 +97,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in actorMovies" :key="item.id">
+            <tr v-for="item in displayedMovies" :key="item.id">
               <td>
                 {{
                   new Date(
@@ -106,8 +106,11 @@
                 }}
               </td>
               <td>
-                <router-link class="link" :to="`/${item.name ? 'tv' : 'movie'}/${item.id}`">
-                  {{item.title || item.name || "-"}}
+                <router-link
+                  class="link"
+                  :to="`/${item.name ? 'tv' : 'movie'}/${item.id}`"
+                >
+                  {{ item.title || item.name || "-" }}
                 </router-link>
               </td>
               <td>{{ item.media_type === "movie" ? "Película" : "Serie" }}</td>
@@ -115,6 +118,12 @@
             </tr>
           </tbody>
         </table>
+        <button
+          v-if="displayedMovies.length < actorMovies.length"
+          @click="loadMoreCredits"
+        >
+          Cargar más
+        </button>
       </div>
     </div>
   </div>
@@ -131,6 +140,9 @@ import {
 import Loader from "../../components/ui/loader/Loader.vue";
 import Accordion from "../../components/ui/accordion/Accordion.vue";
 import MovieCarousel from "../../components/ui/carrusel/MovieCarousel.vue";
+import pLimit from "p-limit";
+
+const limit = pLimit(3);
 
 export default {
   name: "ActorDetails",
@@ -144,10 +156,14 @@ export default {
       actor: null,
       actorMovies: [],
       listActorMovies: [],
+      displayedMovies: [],
       isLoading: true,
       actorSocials: null,
-      apiCallCount: 0,
+      creditsToShow: 10,
     };
+  },
+  mounted() {
+    this.fetchData();
   },
   methods: {
     async fetchData() {
@@ -161,20 +177,17 @@ export default {
         ]);
         this.actor = details;
         this.actorMovies = movies.cast;
+
+        this.displayedMovies = this.actorMovies.slice(0, this.creditsToShow);
         this.actorSocials = socials;
 
         const recommendations = await getActorMovies(actorId);
         const moviesWithDetails = await Promise.all(
-          recommendations.cast.map(async (movie) => {
-            const details = await getMovieDetails(movie.id);
-            return {
-              ...movie,
-              runtime: details.runtime,
-              genres: details.genres,
-              popularity: details.popularity,
-            };
-          })
+          recommendations.cast.map((movie) =>
+            limit(() => getMovieDetails(movie.id))
+          )
         );
+
         this.listActorMovies = moviesWithDetails
           .sort((a, b) => b.popularity - a.popularity)
           .slice(0, 20);
@@ -184,6 +197,13 @@ export default {
       } finally {
         this.isLoading = false;
       }
+    },
+    loadMoreCredits() {
+      const nextMovies = this.actorMovies.slice(
+        this.displayedMovies.length,
+        this.displayedMovies.length + this.creditsToShow
+      );
+      this.displayedMovies = [...this.displayedMovies, ...nextMovies];
     },
     getActorImageUrl(path) {
       return path
@@ -222,9 +242,6 @@ export default {
     totalCredits(movies) {
       return movies.length;
     },
-  },
-  mounted() {
-    this.fetchData();
   },
 };
 </script>

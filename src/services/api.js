@@ -188,7 +188,6 @@ export const getShowKeyWords = async (showId) => {
 export const getShowSeasonDetails = async (showId, seasonNumber) => {
   try {
     const response = await api.get(`/tv/${showId}/season/${seasonNumber}`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error al obtener palabras claves de serie:", error);
@@ -219,7 +218,6 @@ export const getActorMovies = async (actorId) => {
 export const getActorMoviesCombined = async (actorId) => {
   try {
     const response = await api.get(`/person/${actorId}/combined_credits`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error al obtener peliculas de actor:", error);
