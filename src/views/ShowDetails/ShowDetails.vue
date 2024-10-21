@@ -74,8 +74,12 @@
           </div>
           <div class="season-section">
             <h2>Temporadas</h2>
-            <div v-if="latestSeason" class="season-card" >
-              <SeasonCard :season="latestSeason" />
+            <div v-if="latestSeason" class="season-card">
+              <router-link
+                :to="`/tv/${show.id}/season/${latestSeason.season_number}`"
+              >
+                <SeasonCard :season="latestSeason" />
+              </router-link>
             </div>
             <button
               v-if="!showAllSeasons && sortedSeasons.length > 1"
@@ -86,10 +90,14 @@
             </button>
             <div v-if="showAllSeasons" class="season-card">
               <div v-for="season in sortedSeasons" :key="season.id">
-                <SeasonCard
-                  v-if="season.id !== latestSeason.id"
-                  :season="season"
-                />
+                <router-link
+                  :to="`/tv/${show.id}/season/${season.season_number}`"
+                >
+                  <SeasonCard
+                    v-if="season.id !== latestSeason.id"
+                    :season="season"
+                  />
+                </router-link>
               </div>
             </div>
           </div>
@@ -401,7 +409,7 @@ export default {
         .sort((a, b) => b.season_number - a.season_number);
     },
     latestSeason() {
-      return this.sortedSeasons.length > 0 ? this.sortedSeasons[0] : null; 
+      return this.sortedSeasons.length > 0 ? this.sortedSeasons[0] : null;
     },
   },
   watch: {

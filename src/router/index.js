@@ -6,6 +6,7 @@ import MovieDetails from "../views/MovieDetails/MovieDetails.vue";
 import ActorDetails from "../views/person/ActorDetails.vue";
 import KeywordMovies from "../views/keywords/KeywordMovies.vue";
 import ShowDetails from "../views/ShowDetails/ShowDetails.vue";
+import ShowSeasonDetails from "../views/ShowSeasonDetails/ShowSeasonDetails.vue";
 
 const routes = [
   {
@@ -24,6 +25,12 @@ const routes = [
     path: "/tv/:id",
     name: "ShowDetails",
     component: ShowDetails,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/tv/:id/season/:seasonNumber",
+    name: "ShowSeasonDetails",
+    component: ShowSeasonDetails,
     meta: { requiresAuth: true },
   },
   {

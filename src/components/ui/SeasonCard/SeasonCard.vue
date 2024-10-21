@@ -1,26 +1,41 @@
 <template>
-    <div class="season-card">
-      <img
-        :src="getImageUrl(season.poster_path)"
-        :alt="season.name"
-        class="season-poster"
-      />
-      <div class="season-header">
-        <div class="season-info">
-          <h3>Temporada {{ season.season_number }}</h3>
-          <div class="rating-episodes">
-            <span class="rating">{{ formatRating(season.vote_average) }} / 10</span>
-            <span class="separator">•</span>
-            <span class="episodes">{{ season.episode_count }} episodios</span>
-            <span class="separator">•</span>
-            <span class="release-date">{{ formatReleaseDate(season.air_date) }}</span>
-          </div>
+  <div class="season-card">
+    <img
+      :src="getImageUrl(season)"
+      :alt="isEpisode ? season.name : `Temporada ${season.season_number}`"
+      class="season-poster"
+    />
+    <div class="season-header">
+      <div class="season-info">
+        <h3>
+          {{
+            isEpisode
+              ? `${season.episode_number} • ${season.name}`
+              : `Temporada ${season.season_number}`
+          }}
+        </h3>
+        <div class="rating-episodes">
+          <span class="rating"
+            >{{ formatRating(season.vote_average) }} / 10</span
+          >
+          <span class="separator">•</span>
+          <span class="episodes">
+            {{
+              isEpisode
+                ? `${formatRuntime(season.runtime)}`
+                : `${season.episode_count} episodios`
+            }}
+          </span>
+          <span class="separator">•</span>
+          <span class="release-date">{{
+            formatReleaseDate(season.air_date)
+          }}</span>
         </div>
-        <p class="synopsis">{{ season.overview || "Sin sinopsis disponible" }}</p>
       </div>
+      <p class="synopsis">{{ season.overview || "Sin sinopsis disponible" }}</p>
     </div>
-  </template>
-  
+  </div>
+</template>
 
 <script>
 export default {
@@ -30,23 +45,46 @@ export default {
       type: Object,
       required: true,
     },
+    isEpisode: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
-    getImageUrl(path) {
-      return path
-        ? `https://image.tmdb.org/t/p/w500${path}`
+    getImageUrl(season) {
+      return this.isEpisode && season.still_path
+        ? `https://image.tmdb.org/t/p/w500${season.still_path}`
+        : season.poster_path
+        ? `https://image.tmdb.org/t/p/w500${season.poster_path}`
         : "/src/assets/img/not.jpg";
     },
     formatRating(rating) {
       return rating ? `${rating.toFixed(1)}` : "NA";
     },
+    formatRuntime(runtime) {
+      if (!runtime) return "-";
+      const hours = Math.floor(runtime / 60);
+      const minutes = runtime % 60;
+      return `${hours}h ${minutes} min`;
+    },
     formatReleaseDate(date) {
       if (!date) return "-";
-      return new Date(date).toLocaleDateString("es-ES", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
+      const [year, month, day] = date.split("-");
+      const monthNames = [
+        "enero",
+        "febrero",
+        "marzo",
+        "abril",
+        "mayo",
+        "junio",
+        "julio",
+        "agosto",
+        "septiembre",
+        "octubre",
+        "noviembre",
+        "diciembre",
+      ];
+      return `${day} de ${monthNames[parseInt(month) - 1]} de ${year}`;
     },
   },
 };

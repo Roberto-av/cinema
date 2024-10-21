@@ -185,6 +185,17 @@ export const getShowKeyWords = async (showId) => {
   }
 };
 
+export const getShowSeasonDetails = async (showId, seasonNumber) => {
+  try {
+    const response = await api.get(`/tv/${showId}/season/${seasonNumber}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener palabras claves de serie:", error);
+    throw error;
+  }
+};
+
 export const getActorDetails = async (actorId) => {
   try {
     const response = await api.get(`/person/${actorId}`);

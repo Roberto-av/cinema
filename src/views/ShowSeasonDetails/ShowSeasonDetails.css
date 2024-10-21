@@ -1,0 +1,35 @@
+.season-cointer{
+    width: 100%;
+    margin-top: 100px;
+    box-sizing: border-box;
+}
+
+.season-header {
+  background-color: #131740;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.season-title {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.season-title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.episode-seccion{
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.episode{
+    width: 70%;
+    margin: 0 auto;
+}
