@@ -31,4 +31,4 @@ export default {
 };
 </script>
 
-<style src="./CastCard.css" scoped></style>
+<style src="./castCard.css" scoped></style>

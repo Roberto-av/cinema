@@ -67,4 +67,4 @@ export default {
 };
 </script>
 
-<style src="./Login.css" scoped></style>
+<style src="./login.css" scoped></style>
